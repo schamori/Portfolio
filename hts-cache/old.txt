@@ -1,5 +1,0 @@
-date	size'/'remotesize	flags(request:Update,Range state:File response:Modified,Chunked,gZipped)	statuscode	status ('servermsg')	MIME	Etag|Date	URL	localfile	(from URL)
-18:39:54	5254/5254	---M-Z	404	error ('Not%20Found')	text/html	etag:W/%2264d39a40-24a3%22	https://aksh-ai.com/robots.txt		(from )
-18:39:54	70550/70550	U-----	200	untouched ('OK')	text/html	etag:W/%2266fcf2ac-11396%22	https://aksh-ai.com/	C:/Users/morit/OneDrive%20-%20Eviden/Portfolio/TEst/aksh-ai.com/index.html	(from )
-18:39:55	13872/13872	U--M-Z	200	updated ('OK')	text/css	etag:W/%2266fcf2ac-3630%22	https://aksh-ai.com/assets/css/swiper-bundle.min.css	C:/Users/morit/OneDrive%20-%20Eviden/Portfolio/TEst/aksh-ai.com/assets/css/swiper-bundle.min.css	(from https://aksh-ai.com/)
-18:39:56	1359065/1359065	U-----	200	untouched ('')	image/png	etag:%2266fcf2ab-14bcd9%22	https://aksh-ai.com/assets/img/A_final.png	C:/Users/morit/OneDrive%20-%20Eviden/Portfolio/TEst/aksh-ai.com/assets/img/A_final.png	(from https://aksh-ai.com/)
