@@ -136,6 +136,19 @@ function updateLinkImages(isDarkTheme) {
         }
     });
 }
+
+function updateContactImages(isDarkTheme) {
+    const linkImages = document.querySelectorAll('img[src="assets/img/contact.png"]');
+    console.log("Chaning")
+    linkImages.forEach(img => {
+        if (isDarkTheme) {
+            img.style.filter = 'brightness(0) invert(1)';
+        } else {
+            img.style.filter = 'none';
+        }
+    });
+}
+updateContactImages(true)
 /*==================== SCROLL SECTIONS ACTIVE LINK ====================*/
 const sections = document.querySelectorAll('section[id]')
 
@@ -184,13 +197,23 @@ const selectedIcon = localStorage.getItem('selected-icon')
 const getCurrentTheme = () => document.body.classList.contains(darkTheme) ? 'dark' : 'light'
 const getCurrentIcon = () => themeButton.classList.contains(iconTheme) ? 'uil-moon' : 'uil-sun'
 
+
+
 // We validate if the user previously chose a topic
 if (selectedTheme) {
-    // If the validation is fulfilled, we ask what the issue was to know if we activated or deactivated the dark
-    document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](darkTheme)
-    themeButton.classList[selectedIcon === 'uil-moon' ? 'add' : 'remove'](iconTheme)
-    updateLinkImages(selectedTheme === 'dark')
+    // Apply stored theme
+    document.body.classList[selectedTheme === 'dark' ? 'add' : 'remove'](darkTheme);
+    themeButton.classList[selectedIcon === 'uil-moon' ? 'add' : 'remove'](iconTheme);
+    updateLinkImages(selectedTheme === 'dark'); // Update images if necessary
+} else {
+    // Default to dark theme
+    document.body.classList.add(darkTheme);
+    themeButton.classList.add(iconTheme);
+    localStorage.setItem('selected-theme', 'dark');
+    localStorage.setItem('selected-icon', 'uil-moon');
+    updateLinkImages(true); // Ensure images reflect dark theme
 }
+
 
 // Activate / deactivate the theme manually with the button
 themeButton.addEventListener('click', () => {
