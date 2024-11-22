@@ -1005,6 +1005,56 @@
                         </div>
                     </div>
 
+                    <div class="portfolio__content grid swiper-slide" data-swiper-slide-index="13" role="group"
+                        aria-label="14 / 15" style="width: 768px;">
+                        <img src="assets/img/trigger-word-detection.gif" alt="VoiceGuard Visualization"
+                            class="portfolio__img">
+
+                        <div class="portfolio__data">
+                            <h3 class="portfolio__title">VoiceGuard - Intelligent Trigger Word Detection</h3>
+                            <p class="portfolio__description">
+                                A Neural Network that detects the trigger word "activate". The system uses a combination
+                                of background audio, random word snippets, and "activate" snippets for training. When it
+                                hears "activate", it produces a chiming sound. The training data includes audio from
+                                various environments for robust detection.
+                            </p>
+                            <audio controls class="w-full mb-4">
+                                <source src="assets/audio/trigger-word-detection.wav" type="audio/wav">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <a href="https://github.com/schamori/trigger-word" target="_blank"
+                                class="button button--flex button--small portfolio__button">
+                                View<i class="uil uil-arrow-right button__icon"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- New item: JazzGenius - LSTM-Powered Music Generation -->
+                    <div class="portfolio__content grid swiper-slide" data-swiper-slide-index="14" role="group"
+                        aria-label="15 / 15" style="width: 768px;">
+                        <img src="assets/img/music.gif" alt="JazzGenius Visualization" class="portfolio__img">
+
+                        <div class="portfolio__data">
+                            <h3 class="portfolio__title">JazzGenius - LSTM-Powered Music Generation</h3>
+                            <p class="portfolio__description">
+                                An LSTM network trained on a corpus of Jazz music to generate original compositions. The
+                                system predicts the next sound in a sequence, creating a chain of musical notes.
+                                Post-processing ensures the output adheres to musical conventions, producing coherent
+                                and pleasing Jazz melodies.
+                            </p>
+                            <audio controls class="w-full mb-4">
+                                <source src="assets/audio/music.wav" type="audio/wav">
+                                Your browser does not support the audio element.
+                            </audio>
+                            <a href="https://github.com/schamori/music-gen" target="_blank"
+                                class="button button--flex button--small portfolio__button">
+                                View<i class="uil uil-arrow-right button__icon"></i>
+                            </a>
+                        </div>
+                    </div>
+
+
+
                 </div>
 
                 <div class="swiper-button-next" tabindex="0" role="button" aria-label="Next slide"
@@ -1111,6 +1161,22 @@
     </a>
 
     <script src="assets/js/swiper-bundle.min.js"></script>
+    <script>
+        var swiper = new Swiper('.swiper-container', {
+            cssMode: true,
+            loop: true,
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            mousewheel: true,
+            keyboard: true,
+        });
+    </script>
 
     <script src="assets/js/main.js"></script>
 
