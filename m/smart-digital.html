@@ -24,6 +24,11 @@
 </head>
 
 <body>
+    <div class="go-back-container" style="position: fixed; top: 30px; left: 80px; z-index: 1000;">
+        <a href="index.html" class="button button--flex button--small portfolio__button" id="goBackButton">
+            <i class="uil uil-arrow-left button__icon"></i> Go Back
+        </a>
+    </div>
     <section class="portfolio section" id="portfolio">
         <h2 class="section__title" style="color: #ffffff;">Smart Digital - Advanced Infrastructure Monitoring</h2>
         <span class="section__subtitle">Revolutionizing Critical Infrastructure Management</span>
@@ -123,4 +128,30 @@
         </div>
     </section>
     <script src="assets/js/main.js"></script>
+    <div class="portfolio__content grid">
+    </div>
+    </div>
+    </section>
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Fade in effect on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            document.body.style.opacity = '0.5';
+            document.body.style.transition = 'opacity 1s ease-in-out';
+            setTimeout(function () {
+                document.body.style.opacity = '1';
+            }, 0);
+        });
+
+        // Fade out effect on button click
+        document.getElementById('goBackButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.body.style.opacity = '0';
+            setTimeout(function () {
+                window.location.href = e.target.href;
+            }, 500);
+        });
+    </script>
 </body>
+
+</html>
