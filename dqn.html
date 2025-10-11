@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Q-Learning Trading Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 4rem 0;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #888888;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Video Section */
+        .video-section {
+            padding: 3rem 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 900px;
+            aspect-ratio: 16/9;
+            background-color: #111111;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #333333;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Visualizations Grid */
+        .visualizations {
+            padding: 4rem 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 3rem;
+        }
+
+        .viz-card {
+            background-color: #0a0a0a;
+            border: 1px solid #222222;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .viz-card h2 {
+            font-size: 1.75rem;
+            margin-bottom: 1rem;
+            font-weight: bold;
+        }
+
+        .viz-card p {
+            color: #888888;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .viz-content {
+            background-color: #000000;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            padding: 0;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Candlestick Image */
+        .candlestick-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            background-color: #111111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .candlestick-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Sentiment Gauge */
+        .sentiment-gauge {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: #222222;
+            stroke-width: 20;
+        }
+
+        .gauge-fill {
+            fill: none;
+            stroke: #00ff88;
+            stroke-width: 20;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .gauge-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            fill: #ffffff;
+        }
+
+        .gauge-label {
+            font-size: 0.875rem;
+            fill: #888888;
+        }
+
+        /* Trends Chart */
+        .trends-chart {
+            width: 100%;
+            height: 250px;
+        }
+
+        /* Tech Stack */
+        .tech-stack {
+            padding: 4rem 0;
+            border-top: 1px solid #222222;
+            text-align: center;
+        }
+
+        .tech-stack h3 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .tech-tag {
+            padding: 0.75rem 1.5rem;
+            background-color: #0a0a0a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            color: #888888;
+            font-size: 0.95rem;
+        }
+
+        /* GitHub Footer Section */
+        .github-footer {
+            padding: 3rem 0;
+            border-top: 1px solid #222222;
+            text-align: center;
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background-color: #0a0a0a;
+            border: 1px solid #333333;
+            border-radius: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+        }
+
+        .github-link:hover {
+            background-color: #1a1a1a;
+            border-color: #555555;
+            transform: translateY(-2px);
+        }
+
+        .github-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Color accents */
+        .text-primary { color: #00aaff; }
+        .text-accent { color: #ff6b6b; }
+        .text-trends { color: #00ff88; }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1.125rem;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Deep Q-Learning Trading Agent</h1>
+            <p>Autonomous AI agent that learns to maximize returns by fusing visual, textual, and trend-based market signals</p>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="video-section">
+        <div class="container">
+            <div class="video-container">
+                <video controls autoplay loop>
+                    <source src="your-video.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </section>
+
+    <!-- Visualizations -->
+    <section class="visualizations">
+        <div class="container">
+            <div class="grid">
+                <!-- Candlestick Chart -->
+                <div class="viz-card">
+                    <h2 class="text-primary">Candlestick Charts</h2>
+                    <p>CNN extracts visual patterns from historical price data, identifying momentum, reversals, and volatility signals for decision-making.</p>
+                    <div class="viz-content">
+                        <div class="candlestick-image">
+                            <img id="candlestickImg" src="/placeholder.svg" alt="Candlestick chart">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sentiment Score -->
+                <div class="viz-card">
+                    <h2 class="text-accent">Sentiment Score</h2>
+                    <p>Real-time financial news sentiment analysis provides a scalar reflecting market mood, helping the agent respond to breaking events.</p>
+                    <div class="viz-content">
+                        <svg class="sentiment-gauge" viewBox="0 0 200 200">
+                            <circle class="gauge-bg" cx="100" cy="100" r="80"></circle>
+                            <circle class="gauge-fill" id="gaugeFill" cx="100" cy="100" r="80" 
+                                    stroke-dasharray="502.4" stroke-dashoffset="125.6"
+                                    transform="rotate(-90 100 100)"></circle>
+                            <text class="gauge-text" x="100" y="105" text-anchor="middle" id="gaugeValue">0.75</text>
+                            <text class="gauge-label" x="100" y="130" text-anchor="middle">Bullish</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Google Trends -->
+                <div class="viz-card">
+                    <h2 class="text-trends">Google Trends Index</h2>
+                    <p>Aggregate search trends for economy keywords serve as a proxy for macro risk sentiment and overall market mood shifts.</p>
+                    <div class="viz-content">
+                        <canvas id="trendsChart" class="trends-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Stack -->
+    <section class="tech-stack">
+        <div class="container">
+            <h3>Tech Stack</h3>
+            <div class="tech-tags">
+                <span class="tech-tag">PyTorch</span>
+                <span class="tech-tag">TensorFlow</span>
+                <span class="tech-tag">Deep Q-Network</span>
+                <span class="tech-tag">LSTM</span>
+                <span class="tech-tag">CNN</span>
+                <span class="tech-tag">News API</span>
+                <span class="tech-tag">Google Trends</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- GitHub Footer Section -->
+    <footer class="github-footer">
+        <div class="container">
+            <a href="https://github.com/schamori/Finance-Ai.git" class="github-link" target="_blank" rel="noopener noreferrer">
+                <svg class="github-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+                View on GitHub
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        const candlestickImages = [
+    'candlesticks\\chart1.png',
+    'candlesticks\\chart2.png',
+    'candlesticks\\chart3.png',
+    'candlesticks\\chart4.png',
+    'candlesticks\\chart5.png',
+    'candlesticks\\chart6.png',
+    'candlesticks\\chart7.png',
+    'candlesticks\\chart8.png',
+    'candlesticks\\chart9.png',
+];
+        
+        let currentCandlestickIndex = 0;
+        
+        function updateCandlestickImage() {
+            const img = document.getElementById('candlestickImg');
+            currentCandlestickIndex = Math.floor(Math.random() * candlestickImages.length);
+            img.src = candlestickImages[currentCandlestickIndex];
+        }
+        
+        function updateSentiment() {
+            const sentiment = Math.random(); // Random value between 0 and 1
+            const circumference = 2 * Math.PI * 80;
+            const offset = circumference - (sentiment * circumference);
+            
+            const gaugeFill = document.getElementById('gaugeFill');
+            gaugeFill.style.strokeDashoffset = offset;
+            
+            // Update color based on sentiment
+            if (sentiment > 0.6) {
+                gaugeFill.style.stroke = '#00ff88'; // Green for bullish
+                document.querySelector('.gauge-label').textContent = 'Bullish';
+            } else if (sentiment < 0.4) {
+                gaugeFill.style.stroke = '#ff6b6b'; // Red for bearish
+                document.querySelector('.gauge-label').textContent = 'Bearish';
+            } else {
+                gaugeFill.style.stroke = '#ffaa00'; // Orange for neutral
+                document.querySelector('.gauge-label').textContent = 'Neutral';
+            }
+            
+            document.getElementById('gaugeValue').textContent = sentiment.toFixed(2);
+        }
+
+        function drawTrendsChart() {
+            const canvas = document.getElementById('trendsChart');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas size
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            // Generate random data
+            const data = Array.from({length: 12}, () => Math.floor(Math.random() * 50) + 40);
+            
+            const padding = 40;
+            const chartWidth = canvas.width - padding * 2;
+            const chartHeight = canvas.height - padding * 2;
+            const maxValue = Math.max(...data);
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw grid lines
+            ctx.strokeStyle = '#222222';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(canvas.width - padding, y);
+                ctx.stroke();
+            }
+            
+            // Draw area fill
+            ctx.beginPath();
+            ctx.moveTo(padding, canvas.height - padding);
+            
+            data.forEach((value, index) => {
+                const x = padding + (chartWidth / (data.length - 1)) * index;
+                const y = canvas.height - padding - (value / maxValue) * chartHeight;
+                if (index === 0) {
+                    ctx.lineTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            
+            ctx.lineTo(canvas.width - padding, canvas.height - padding);
+            ctx.closePath();
+            
+            const gradient = ctx.createLinearGradient(0, padding, 0, canvas.height - padding);
+            gradient.addColorStop(0, 'rgba(255, 255, 255, 0.3)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+            ctx.fillStyle = gradient;
+            ctx.fill();
+            
+            // Draw line (white)
+            ctx.beginPath();
+            data.forEach((value, index) => {
+                const x = padding + (chartWidth / (data.length - 1)) * index;
+                const y = canvas.height - padding - (value / maxValue) * chartHeight;
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            
+            // Draw points (white)
+            data.forEach((value, index) => {
+                const x = padding + (chartWidth / (data.length - 1)) * index;
+                const y = canvas.height - padding - (value / maxValue) * chartHeight;
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+            });
+        }
+
+        window.addEventListener('load', () => {
+            // Initial load
+            updateCandlestickImage();
+            updateSentiment();
+            drawTrendsChart();
+            
+            // Update candlestick every second
+            setInterval(updateCandlestickImage, 1000);
+            
+            // Update sentiment every second
+            setInterval(updateSentiment, 1000);
+            
+            // Update trends chart every second
+            setInterval(drawTrendsChart, 1000);
+        });
+
+        // Redraw chart on resize
+        window.addEventListener('resize', drawTrendsChart);
+    </script>
+</body>
+</html>
