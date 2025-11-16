@@ -867,35 +867,32 @@ img {
   align-items: center;
   margin-bottom: var(--mb-2-5);
   cursor: pointer;
-  user-select: none;
+}
+
+.skills__icon,
+.skills__arrow {
+  font-size: 2rem;
+  color: var(--first-color);
 }
 
 .skills__icon {
-  font-size: 2rem;
-  margin-right: var(--mb-1);
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  margin-right: var(--mb-0-75);
 }
 
 .skills__arrow {
-  font-size: 1.5rem;
-  color: var(--first-color);
   margin-left: auto;
-  transition: transform 0.4s ease;
+  transition: .4s;
 }
 
 .skills__title {
   font-size: var(--h3-font-size);
-  font-weight: var(--font-bold);
+  font-weight: var(--font-semi-bold);
   color: var(--title-color);
 }
 
 .skills__subtitle {
-  font-size: var(--small-font-size);
+  font-size: var(--smaller-font-size);
   color: var(--text-color-light);
-  font-weight: var(--font-medium);
 }
 
 .skills__list {
@@ -912,52 +909,22 @@ img {
 
 .skills__name {
   font-size: var(--normal-font-size);
-  font-weight: var(--font-semi-bold);
-  color: var(--title-color);
+  font-weight: var(--font-medium);
 }
 
-.skills__number {
-  font-size: var(--small-font-size);
-  font-weight: var(--font-bold);
-  color: var(--first-color);
+.skills__bar,
+.skills__percentage {
+  height: 5px;
+  border-radius: .25rem;
 }
 
 .skills__bar {
-  height: 8px;
-  border-radius: var(--radius-full);
-  background-color: rgba(102, 126, 234, 0.1);
-  position: relative;
-  overflow: hidden;
+  background-color: var(--first-color-lighter);
 }
 
 .skills__percentage {
   display: block;
-  height: 100%;
-  border-radius: var(--radius-full);
-  background: var(--gradient-primary);
-  position: relative;
-  overflow: hidden;
-}
-
-.skills__percentage::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.3),
-    transparent
-  );
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  background-color: var(--first-color);
 }
 
 .skills_azura {
@@ -1330,27 +1297,24 @@ img {
 }
 
 .swiper-portfolio-icon {
-  font-size: 1.75rem;
+  font-size: 2rem;
   color: var(--first-color);
-  transition: all var(--transition-base);
 }
 
 .swiper-button-prev,
 .swiper-button-next {
-  width: 45px;
-  height: 45px;
-  background: var(--container-color);
-  border-radius: var(--radius-full);
-  box-shadow: var(--shadow-md);
-  transition: all var(--transition-base);
-  border: 2px solid rgba(102, 126, 234, 0.2);
+  width: 40px;
+  height: 40px;
+  background-color: var(--container-color);
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: .3s;
 }
 
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
-  background: var(--first-color);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--first-color);
+  background-color: var(--first-color);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .swiper-button-prev:hover .swiper-portfolio-icon,
@@ -1359,30 +1323,26 @@ img {
 }
 
 .swiper-button-prev {
-  left: 0.5rem;
+  left: -.5rem;
 }
 
 .swiper-button-next {
-  right: 0.5rem;
+  right: -.5rem;
 }
 
 .swiper-container-horizontal>.swiper-pagination-bullets {
-  bottom: -2rem;
+  bottom: -2.5rem;
 }
 
 .swiper-pagination-bullet {
-  width: 10px;
-  height: 10px;
-  background-color: rgba(102, 126, 234, 0.3);
-  opacity: 1;
-  transition: all var(--transition-base);
+  background-color: var(--first-color);
+  opacity: .3;
   outline: none;
 }
 
 .swiper-pagination-bullet-active {
-  background: var(--first-color);
-  width: 28px;
-  border-radius: var(--radius-full);
+  background-color: var(--first-color);
+  opacity: 1;
 }
 
 /*==================== PROJECT IN MIND ====================*/
