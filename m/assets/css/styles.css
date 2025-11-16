@@ -900,8 +900,7 @@ img {
 
 .skills__list {
   row-gap: 1.5rem;
-  padding-left: 0;
-  padding-top: var(--mb-1);
+  padding-left: 2.7rem;
 }
 
 .skills__titles {
@@ -1082,18 +1081,13 @@ img {
 }
 
 .skills__close .skills__list {
-  max-height: 0;
+  height: 0;
   overflow: hidden;
-  opacity: 0;
-  padding-top: 0;
-  transition: max-height 0.4s ease, opacity 0.3s ease, padding 0.3s ease;
 }
 
 .skills__open .skills__list {
-  max-height: 3000px;
-  opacity: 1;
+  height: max-content;
   margin-bottom: var(--mb-2-5);
-  transition: max-height 0.6s ease, opacity 0.4s ease, padding 0.4s ease;
 }
 
 .skills__open .skills__arrow {
@@ -1336,29 +1330,27 @@ img {
 }
 
 .swiper-portfolio-icon {
-  font-size: 2rem;
+  font-size: 1.75rem;
   color: var(--first-color);
   transition: all var(--transition-base);
 }
 
 .swiper-button-prev,
 .swiper-button-next {
-  width: 50px;
-  height: 50px;
-  background: var(--card-color);
+  width: 45px;
+  height: 45px;
+  background: var(--container-color);
   border-radius: var(--radius-full);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-md);
   transition: all var(--transition-base);
-  display: flex !important;
-  align-items: center;
-  justify-content: center;
+  border: 2px solid rgba(102, 126, 234, 0.2);
 }
 
 .swiper-button-prev:hover,
 .swiper-button-next:hover {
   background: var(--first-color);
-  box-shadow: var(--shadow-colored);
-  transform: scale(1.1);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--first-color);
 }
 
 .swiper-button-prev:hover .swiper-portfolio-icon,
@@ -1367,20 +1359,20 @@ img {
 }
 
 .swiper-button-prev {
-  left: -0.5rem;
+  left: 0.5rem;
 }
 
 .swiper-button-next {
-  right: -0.5rem;
+  right: 0.5rem;
 }
 
 .swiper-container-horizontal>.swiper-pagination-bullets {
-  bottom: 0;
+  bottom: -2rem;
 }
 
 .swiper-pagination-bullet {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   background-color: rgba(102, 126, 234, 0.3);
   opacity: 1;
   transition: all var(--transition-base);
@@ -1388,8 +1380,8 @@ img {
 }
 
 .swiper-pagination-bullet-active {
-  background: var(--gradient-primary);
-  width: 32px;
+  background: var(--first-color);
+  width: 28px;
   border-radius: var(--radius-full);
 }
 
