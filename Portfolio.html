@@ -1,0 +1,2429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Moritz — Machine Learning Engineer</title>
+<link rel="icon" href="m/assets/img/favicon.png" />
+<link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.6/css/line.css">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+<style>
+/* ---------- TWEAK DEFAULTS (persisted via EDITMODE) ---------- */
+/* (in JS below) */
+
+:root{
+  --cream: #f5efe4;
+  --cream-2: #efe6d4;
+  --cream-3: #e6dcc5;
+  --ink: #1e1a17;
+  --ink-2: #3a3230;
+  --ink-3: #6b5f58;
+  --rust: #c85a3d;
+  --rust-deep: #a84528;
+  --rust-soft: #e39478;
+  --accent: #c85a3d;
+  --line: #241f1b;
+  --muted: rgba(30,26,23,0.55);
+  --hair: rgba(30,26,23,0.16);
+
+  --f-display: "Fraunces", Georgia, serif;
+  --f-body:    "Inter Tight", system-ui, sans-serif;
+  --f-hand:    "Caveat", "Fraunces", cursive;
+}
+
+*{box-sizing:border-box;}
+html, body{margin:0; padding:0;}
+html{scroll-behavior:auto;}
+body{
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a{color:inherit;}
+img{max-width:100%; display:block;}
+
+/* Subtle paper texture */
+body::before{
+  content:"";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(120,90,60,0.06) 1px, transparent 1px),
+    radial-gradient(rgba(200,90,61,0.04) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 1px;
+  mix-blend-mode: multiply;
+  z-index: 1;
+}
+
+/* ---------- NAV ---------- */
+.nav{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  background: rgba(245,239,228,0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--hair);
+}
+.nav__logo{
+  display:flex; align-items:center; gap:10px;
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 22px;
+  text-decoration:none;
+  letter-spacing: -0.01em;
+}
+.nav__logo .mark{
+  width: 22px; height: 22px;
+  background: var(--rust);
+  position: relative;
+  display:inline-block;
+  border: 1.5px solid var(--line);
+  transform: rotate(-2deg);
+}
+.nav__logo .mark::before, .nav__logo .mark::after{
+  content:""; position:absolute; background: var(--cream);
+}
+.nav__logo .mark::before{ left: 45%; top: 14%; width: 10%; height: 72%; }
+.nav__logo .mark::after{ top: 45%; left: 14%; height: 10%; width: 72%; }
+
+.nav__list{
+  display:flex; gap: 28px; list-style:none; margin:0; padding:0;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.nav__list a{
+  text-decoration: none;
+  color: var(--ink-2);
+  padding: 6px 2px;
+  position: relative;
+  transition: color .2s;
+}
+.nav__list a:hover{ color: var(--rust-deep); }
+.nav__list a::after{
+  content:""; position:absolute; left:0; right:0; bottom:0;
+  height:1px; background: var(--rust);
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform .35s ease;
+}
+.nav__list a:hover::after{ transform-origin:left; transform: scaleX(1); }
+
+.nav__cta{
+  font-family: var(--f-body);
+  font-size: 14px;
+  padding: 10px 18px;
+  background: var(--ink);
+  color: var(--cream);
+  text-decoration:none;
+  border-radius: 999px;
+  letter-spacing: 0.05em;
+  transition: background .2s;
+}
+.nav__cta:hover{ background: var(--rust-deep); }
+
+/* ---------- HERO + SCRUB (combined) ---------- */
+/* The hero-scrub section is a tall scroll track. Its inner sticky wrapper pins a single stage
+   where the hero content fades out while the video grows from a small box (placed where the
+   144/cross sketch was) to fullscreen. */
+.hero-scrub{
+  position: relative;
+  z-index: 2;
+  /* height set at runtime via JS (pin × viewport) */
+}
+.hero-sticky{
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background: var(--cream);
+}
+.hero{
+  position: absolute;
+  inset: 0;
+  padding: 140px 60px 80px;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 60px;
+  align-items: center;
+  z-index: 2;
+  will-change: opacity, transform;
+}
+
+.hero__left{
+  position: relative;
+  min-height: 520px;
+}
+.hero__eyebrow{
+  font-family: var(--f-body);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-bottom: 28px;
+  display:flex; align-items:center; gap:12px;
+}
+.hero__eyebrow::before{
+  content:""; width: 36px; height:1px; background: var(--ink-3);
+}
+
+.hero__sketch{
+  position: relative;
+  margin-top: 40px;
+  width: 540px;
+  max-width: 100%;
+  height: 260px;
+  /* Invisible anchor — the video stage snaps its starting rect to this box */
+}
+/* Hand-drawn cross */
+.cross-wrap{
+  position: relative;
+  display: inline-block;
+}
+.cross{
+  width: 140px;
+  height: 140px;
+  position: relative;
+  display:block;
+}
+.cross svg{
+  width:100%; height:100%;
+  overflow: visible;
+}
+.cross-num{
+  font-family: var(--f-hand);
+  font-size: 44px;
+  color: var(--ink);
+  position: absolute;
+  left: 14px;
+  bottom: -50px;
+  transform: rotate(-3deg);
+  letter-spacing: 0.05em;
+}
+
+.ecg-wrap{
+  position: absolute;
+  left: 170px;
+  top: 30px;
+  width: 380px;
+  height: 120px;
+}
+.ecg-wrap svg{
+  width:100%; height:100%;
+  overflow: visible;
+}
+.ecg-path{
+  fill:none;
+  stroke: var(--line);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 900;
+  stroke-dashoffset: 900;
+  animation: ecgDraw 3.2s ease-out .6s forwards, ecgPulse 2.4s ease-in-out 4s infinite;
+}
+@keyframes ecgDraw{
+  to{ stroke-dashoffset: 0; }
+}
+@keyframes ecgPulse{
+  0%, 100%{ opacity: 1; }
+  50%{ opacity: 0.55; }
+}
+
+/* Heading */
+.hero__title{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(72px, 11vw, 168px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+.hero__title em{
+  font-style: italic;
+  font-weight: 400;
+  color: var(--rust-deep);
+}
+.hero__tagline{
+  font-family: var(--f-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(18px, 1.6vw, 22px);
+  color: var(--ink-2);
+  max-width: 420px;
+  margin: 0 0 32px;
+  line-height: 1.4;
+}
+.hero__meta{
+  display:flex; gap: 24px; flex-wrap: wrap;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+}
+.hero__meta span + span::before{
+  content:"•"; margin-right: 24px; color: var(--rust);
+}
+
+/* Right: portrait */
+.hero__right{
+  position: relative;
+  justify-self: end;
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 4/5;
+}
+.portrait-frame{
+  position: absolute; inset: 0;
+  background: var(--cream-2);
+  border: 1.5px solid var(--line);
+  overflow:hidden;
+}
+.portrait-img{
+  position:absolute;
+  inset: 0;
+  width:100%; height:100%;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: saturate(0.88) contrast(1.02);
+}
+.portrait-caption{
+  position:absolute;
+  bottom: -34px;
+  right: 18px;
+  font-family: var(--f-hand);
+  font-size: 26px;
+  color: var(--ink);
+  transform: rotate(-1.5deg);
+}
+.portrait-tape{
+  position:absolute;
+  top: -14px; left: 28%;
+  width: 92px; height: 26px;
+  background: rgba(200,90,61,0.35);
+  border: 1px solid rgba(30,26,23,0.25);
+  transform: rotate(-4deg);
+  z-index: 3;
+}
+.portrait-tape.right{
+  left: auto; right: 20%; top: -12px;
+  transform: rotate(3deg);
+  background: rgba(200,90,61,0.22);
+}
+
+/* Scroll hint */
+.scroll-hint{
+  position: absolute;
+  bottom: 34px; left: 60px;
+  display:flex; align-items:center; gap: 14px;
+  font-family: var(--f-body);
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--muted);
+  z-index: 3;
+}
+.scroll-hint__line{
+  width: 56px; height:1px; background: var(--ink-3);
+  position:relative; overflow:hidden;
+}
+.scroll-hint__line::after{
+  content:""; position:absolute; left:-40%; top:0; bottom:0; width:40%;
+  background: var(--rust);
+  animation: scrollLine 1.8s ease-in-out infinite;
+}
+@keyframes scrollLine{
+  0%{ left:-40%; } 100%{ left: 100%; }
+}
+
+/* ---------- SCRUB VIDEO (morphs from inline box to fullscreen) ---------- */
+/* The video sits in a box that starts at the sketch position (left column) and grows to
+   cover the whole viewport as scroll progresses through the pin. */
+.scrub-stage{
+  position: absolute;
+  /* These start values are written at runtime (matching the sketch box rect). */
+  left: 0; top: 0; width: 100%; height: 100%;
+  overflow: hidden;
+  z-index: 3;
+  background: var(--cream);
+  pointer-events: none;
+  border: 1.5px solid transparent;
+  transition: border-color .2s;
+  will-change: transform, width, height, left, top;
+}
+.scrub-video{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  background: var(--cream);
+  display: block;
+}
+.scrub-first-frame{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+.scrub-first-frame.hidden{ opacity: 0; }
+/* The sketch (cross + ECG + 144) lives on top of the video box when it's small, and fades
+   out as the video takes over. */
+.sketch-overlay{
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px 0 0 10px;
+  pointer-events: none;
+  background: transparent;
+  will-change: opacity;
+}
+/* Warm vignette to tie into palette */
+/* Warm vignette only when video is fullscreen */
+.scrub-vignette{
+  position:absolute; inset:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at center, transparent 55%, rgba(30,18,12,0.45) 100%);
+  mix-blend-mode: multiply;
+  z-index: 4;
+  opacity: 0;
+  will-change: opacity;
+}
+/* Progress bar */
+.scrub-progress{
+  position:absolute;
+  left: 0; right:0; bottom: 0;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+  z-index: 5;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.scrub-progress.visible{ opacity: 1; }
+.scrub-progress__fill{
+  height:100%;
+  width: 0%;
+  background: var(--rust);
+  transition: width .05s linear;
+}
+.scrub-label{
+  position:absolute;
+  left: 40px; top: 28px;
+  color: var(--cream);
+  font-family: var(--f-body);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  z-index: 5;
+  mix-blend-mode: difference;
+  display:flex; align-items:center; gap:10px;
+  opacity: 0;
+  transition: opacity .3s;
+}
+.scrub-label.visible{ opacity: 1; }
+.scrub-label .dot{
+  width:8px; height:8px; background: var(--rust); border-radius: 50%;
+  animation: blink 1.4s ease-in-out infinite;
+}
+@keyframes blink{ 50%{opacity:0.3;} }
+
+.scrub-caption{
+  position:absolute;
+  right: 40px; bottom: 40px;
+  color: var(--cream);
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: clamp(18px, 1.8vw, 26px);
+  max-width: 480px;
+  text-align: right;
+  z-index: 5;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .4s ease, transform .5s ease;
+  line-height: 1.35;
+  text-wrap: pretty;
+}
+.scrub-caption.visible{
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ---------- SECTION BASICS ---------- */
+section.band{
+  position: relative;
+  z-index: 2;
+  padding: 120px 60px;
+}
+.band--cream-2{ background: var(--cream-2); }
+.band--ink{ background: var(--ink); color: var(--cream); }
+
+.section-head{
+  max-width: 1240px; margin: 0 auto 72px;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 40px;
+  align-items: end;
+  border-bottom: 1px solid var(--hair);
+  padding-bottom: 28px;
+}
+.band--ink .section-head{ border-bottom-color: rgba(245,239,228,0.15); }
+.section-kicker{
+  font-family: var(--f-body);
+  font-size: 12px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display:flex; align-items:center; gap: 10px;
+}
+.band--ink .section-kicker{ color: rgba(245,239,228,0.6); }
+.section-kicker::before{
+  content:""; width: 28px; height: 1px; background: var(--rust);
+}
+.section-title{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(44px, 6vw, 88px);
+  letter-spacing: -0.025em;
+  line-height: 1;
+  margin: 0;
+}
+.section-title em{
+  font-style: italic;
+  font-weight: 400;
+  color: var(--rust-deep);
+}
+.band--ink .section-title em{ color: var(--rust-soft); }
+
+/* ---------- SKILLS (Copied from Old Portfolio) ---------- */
+.skills__container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 768px) {
+  .skills__container {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 4rem;
+    align-items: start;
+  }
+}
+
+.skills__header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  cursor: pointer;
+}
+.skills__icon,
+.skills__arrow {
+  font-size: 2rem;
+  color: var(--rust);
+}
+.skills__icon {
+  margin-right: 0.75rem;
+}
+.skills__title {
+  font-size: 1.25rem;
+  font-family: var(--f-display);
+  color: var(--ink);
+}
+.skills__subtitle {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.skills__arrow {
+  margin-left: auto;
+  transition: .4s;
+}
+.skills__list {
+  row-gap: 1.5rem;
+  padding-left: 2.7rem;
+  display: grid;
+}
+.skills__titles {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.skills__name {
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.skills__bar,
+.skills__percentage {
+  height: 5px;
+  border-radius: .25rem;
+}
+.skills__bar {
+  background-color: var(--cream-3);
+}
+.skills__percentage {
+  display: block;
+  background-color: var(--rust);
+}
+
+/* Widths for the bars */
+.skills_azura { width: 80%; }
+.skills__html { width: 90%; }
+.skills__css { width: 85%; }
+.skills__js { width: 75%; }
+.skills__react { width: 85%; }
+.skills__node { width: 80%; }
+.skills__pythons { width: 95%; }
+.skills__frameworks { width: 90%; }
+.skills__cv { width: 92%; }
+.skills__nlp { width: 85%; }
+.skills__ap { width: 90%; }
+.skills__rl { width: 88%; }
+.skills__drl { width: 85%; }
+.skills__rlhf { width: 82%; }
+.skills__ps { width: 85%; }
+.skills__dav { width: 80%; }
+.skills__python { width: 95%; }
+.skills__pytorch { width: 92%; }
+.skills__tf { width: 88%; }
+.skills__numpy { width: 93%; }
+.skills__r { width: 80%; }
+.skills__cpp { width: 90%; }
+.skills__java { width: 90%; }
+.skills__sql { width: 95%; }
+.skills__mlflow { width: 87%; }
+.skills__gcp { width: 90%; }
+.skills__aws { width: 75%; }
+.skills__git { width: 90%; }
+.skills__linux { width: 90%; }
+.skills__sd { width: 85%; }
+.skills__lead { width: 95%; }
+.skills__tm { width: 98%; }
+.skills__com { width: 90%; }
+
+.skills__close .skills__list {
+  height: 0px;
+  overflow: hidden;
+  margin-bottom: 0;
+}
+.skills__open .skills__list {
+  height: max-content;
+  margin-bottom: 2.5rem;
+}
+.skills__open .skills__arrow {
+  transform: rotate(-180deg);
+}
+
+@media screen and (min-width: 568px) {
+  .skills__container {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 3rem;
+  }
+}
+
+/* ---------- EXPERIENCE / TIMELINE ---------- */
+.timeline{
+  max-width: 1100px; margin: 0 auto;
+  position: relative;
+  padding-left: 36px;
+}
+.timeline::before{
+  content:"";
+  position:absolute;
+  left: 6px; top: 10px; bottom: 10px;
+  width: 1px; background: var(--hair);
+}
+.band--ink .timeline::before{ background: rgba(245,239,228,0.2); }
+.t-item{
+  position: relative;
+  padding: 28px 0 28px 32px;
+  display: grid;
+  grid-template-columns: 170px 1fr auto;
+  gap: 32px;
+  align-items: baseline;
+  border-bottom: 1px solid var(--hair);
+}
+.band--ink .t-item{ border-bottom-color: rgba(245,239,228,0.12); }
+.t-item:last-child{ border-bottom: none; }
+.t-item::before{
+  content:"";
+  position:absolute;
+  left: -36px; top: 38px;
+  width: 13px; height: 13px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 2px solid var(--rust);
+}
+.band--ink .t-item::before{ background: var(--ink); }
+.t-item.current::before{
+  background: var(--rust);
+  box-shadow: 0 0 0 6px rgba(200,90,61,0.15);
+}
+.t-date{
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--rust-deep);
+  letter-spacing: 0.02em;
+}
+.band--ink .t-date{ color: var(--rust-soft); }
+.t-role{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 22px;
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+.t-company{
+  font-size: 14px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+.band--ink .t-company{ color: rgba(245,239,228,0.6); }
+.t-type{
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.band--ink .t-type{ border-color: rgba(245,239,228,0.2); color: rgba(245,239,228,0.7);}
+
+/* Tabs */
+.tabs{
+  max-width: 1100px; margin: 0 auto 40px;
+  display: flex; gap: 8px;
+  border-bottom: 1px solid var(--hair);
+}
+.band--ink .tabs{ border-bottom-color: rgba(245,239,228,0.15); }
+.tab{
+  font-family: var(--f-body);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  position: relative;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.tab.active{
+  color: var(--ink);
+  border-bottom-color: var(--rust);
+}
+.band--ink .tab.active{ color: var(--cream); }
+
+/* ---------- RESEARCH ---------- */
+.research-grid{
+  max-width: 1240px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+.research-card{
+  background: var(--cream);
+  border: 1px solid var(--hair);
+  padding: 36px 34px;
+  position: relative;
+  transition: transform .3s, box-shadow .3s;
+  cursor: pointer;
+}
+.research-card:hover{
+  transform: translateY(-4px);
+  box-shadow: 0 30px 60px -30px rgba(30,26,23,0.25);
+}
+.research-card__tag{
+  display:inline-block;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 16px;
+}
+.research-card__title{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  letter-spacing: -0.01em;
+}
+.research-card__sub{
+  font-size: 13px;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 18px;
+}
+.research-card__desc{
+  font-size: 15px;
+  color: var(--ink-2);
+  line-height: 1.55;
+}
+.research-card__more{
+  display:flex; align-items:center; gap: 10px;
+  margin-top: 24px;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rust-deep);
+}
+
+/* ---------- PORTFOLIO / PROJECTS ---------- */
+.projects{
+  max-width: 1240px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+.project{
+  position: relative;
+  background: var(--cream-2);
+  border: 1px solid var(--hair);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .35s;
+}
+.project:hover{ transform: translateY(-3px); }
+.project:hover .project__bg{ transform: scale(1.04); }
+.project__bg{
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  transition: transform .8s ease;
+  filter: saturate(0.85);
+}
+.project__body{
+  position: relative;
+  min-height: 320px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: var(--cream);
+  z-index: 2;
+}
+.project__body::before{
+  content:""; position:absolute; inset:0;
+  background: linear-gradient(180deg, rgba(30,26,23,0.1) 0%, rgba(30,26,23,0.65) 65%, rgba(30,26,23,0.88) 100%);
+  z-index: -1;
+}
+.project__tag{
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--rust-soft);
+  margin-bottom: 10px;
+}
+.project__title{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1.15;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+.project__desc{
+  font-size: 13px;
+  color: rgba(245,239,228,0.85);
+  margin: 0;
+}
+.p-wide { grid-column: span 8; }
+.p-tall { grid-column: span 4; }
+.p-med  { grid-column: span 6; }
+.p-third{ grid-column: span 4; }
+.project.p-wide .project__body{ min-height: 380px; }
+.project.p-tall .project__body{ min-height: 380px; }
+
+/* Placeholder decorations for projects without images */
+.proj-placeholder{
+  position: absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+}
+.proj-placeholder svg{ width: 60%; height: 60%; opacity: .35; }
+
+/* ---------- CONTACT ---------- */
+.contact{
+  max-width: 1100px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 60px;
+  align-items: start;
+}
+.contact__big{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(44px, 5vw, 72px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin: 0 0 24px;
+}
+.contact__big em{ font-style: italic; color: var(--rust-soft); }
+.contact__lead{
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 20px;
+  color: rgba(245,239,228,0.78);
+  max-width: 520px;
+  margin-bottom: 40px;
+}
+.contact__links{
+  display: flex; flex-direction: column; gap: 14px;
+}
+.contact__link{
+  display:flex; align-items:center; justify-content: space-between;
+  padding: 20px 24px;
+  background: rgba(245,239,228,0.04);
+  border: 1px solid rgba(245,239,228,0.12);
+  color: var(--cream);
+  text-decoration:none;
+  transition: all .25s;
+}
+.contact__link:hover{
+  background: var(--rust-deep);
+  border-color: var(--rust-deep);
+  transform: translateX(4px);
+}
+.contact__link-label{
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(245,239,228,0.55);
+  display:block;
+  margin-bottom: 4px;
+}
+.contact__link-val{
+  font-family: var(--f-display);
+  font-size: 20px;
+}
+.contact__arrow{ font-size: 18px; opacity: .6; }
+.contact__link:hover .contact__arrow{ opacity: 1; transform: translate(2px,-2px); }
+
+/* ---------- FOOTER ---------- */
+.footer{
+  padding: 40px 60px;
+  font-size: 13px;
+  color: var(--muted);
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-top: 1px solid var(--hair);
+  background: var(--cream);
+  position: relative; z-index: 2;
+}
+.footer .mark-sm{
+  display:inline-block; width: 12px; height: 12px; background: var(--rust);
+  margin-right: 6px; vertical-align: middle;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 960px){
+  .hero{ grid-template-columns: 1fr; padding: 120px 28px 60px; }
+  .hero__right{ justify-self: start; max-width: 280px; margin-top: 40px; }
+  .nav__list{ display:none; }
+  .nav{ padding: 14px 20px; }
+  section.band{ padding: 80px 28px; }
+  .section-head{ grid-template-columns: 1fr; gap: 16px; }
+  .skill-card{ grid-column: span 12; }
+  .research-grid{ grid-template-columns: 1fr; }
+  .projects{ grid-template-columns: 1fr; }
+  .p-wide,.p-tall,.p-med,.p-third{ grid-column: span 1; }
+  .contact{ grid-template-columns: 1fr; }
+  .t-item{ grid-template-columns: 1fr; gap: 6px; }
+  .ecg-wrap{ left: 150px; width: 240px; }
+  .scroll-hint{ left: 28px; }
+  .footer{ padding: 30px 24px; }
+}
+
+/* ---------- QUALIFICATION (Experience & Education) ---------- */
+.qualification__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 40px auto 0;
+}
+@media screen and (min-width: 768px) {
+  .qualification__grid {
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 5rem;
+  }
+}
+
+.qualification__header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  gap: 1rem;
+}
+.qualification__icon {
+  font-size: 2rem;
+  color: var(--rust);
+}
+.qualification__area-title {
+  font-family: var(--f-display);
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+.qualification__data {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+  column-gap: 2rem;
+}
+
+.qualification__title {
+  font-family: var(--f-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem 0;
+  color: var(--ink);
+}
+.qualification__subtitle {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--ink-3);
+  margin-bottom: 1rem;
+}
+.qualification__calendar {
+  font-size: 0.8rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2rem;
+}
+
+.qualification__timeline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.qualification__rounder {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  background-color: var(--rust);
+  border-radius: 50%;
+}
+.qualification__line {
+  display: block;
+  width: 1px;
+  height: 100%;
+  background-color: var(--rust);
+  opacity: 0.3;
+  transform: translateY(-5px);
+}
+
+.qualification__text a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s;
+}
+.qualification__text a:hover .qualification__title {
+  color: var(--rust);
+}
+
+/* Hide scrollbar on scrub section only for aesthetic — keep page scrollable */
+</style>
+</head>
+<body>
+
+<!-- ==================== NAV ==================== -->
+<nav class="nav">
+  <a href="#top" class="nav__logo">
+    <span class="mark"></span>
+    <span>Moritz</span>
+  </a>
+  <ul class="nav__list">
+    <li><a href="#story">Story</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#portfolio">Work</a></li>
+  </ul>
+  <a class="nav__cta" href="#contact">Get in touch →</a>
+</nav>
+
+<!-- ==================== HERO + SCROLL-SCRUB ==================== -->
+<section class="hero-scrub" id="top">
+  <div class="hero-sticky">
+
+    <!-- Hero content (fades out as we scroll) -->
+    <div class="hero" id="heroInner">
+      <div class="hero__left">
+        <div class="hero__eyebrow">Moritz Schaller · Machine Learning Engineer · London / Vienna</div>
+
+        <h1 class="hero__title">Mor<em>itz</em>.</h1>
+        <p class="hero__tagline">
+          I spent three years as a paramedic and I'm still a dropout. Now I train models that watch, understand, and reason about the world.
+        </p>
+
+        <div class="hero__meta">
+          <span>Artificial Intelligence</span>
+          <span>Data Science</span>
+          <span>Software Engineering</span>
+          <span>Dropout</span>
+        </div>
+
+        <!-- Sketch anchor — the video stage morphs from this box's rect to fullscreen -->
+        <div class="hero__sketch" id="sketchAnchor"></div>
+      </div>
+
+      <div class="hero__right" style="max-width: 260px;">
+        <div class="portrait-frame">
+          <img class="portrait-img" src="m/assets/img/Moritz.png" alt="Moritz" />
+        </div>
+        <span class="portrait-caption">— that's me, 22</span>
+      </div>
+
+      <div class="scroll-hint">
+        <span>Scroll to begin</span>
+        <span class="scroll-hint__line"></span>
+      </div>
+    </div>
+
+    <!-- Video stage: starts positioned over #sketchAnchor, morphs to fullscreen on scroll -->
+    <div class="scrub-stage" id="scrubStage">
+      <video class="scrub-video" id="scrubVideo" src="assets/scroll-video.mp4"
+             poster="assets/first-frame.png"
+             muted playsinline preload="auto" disablepictureinpicture></video>
+      <img class="scrub-first-frame" id="scrubFirstFrame" src="assets/first-frame.png" alt="" />
+
+      <!-- Sketch overlay: now just shows the first frame of the video -->
+      <div class="sketch-overlay" id="sketchOverlay">
+      </div>
+
+      <div class="scrub-vignette" id="scrubVignette"></div>
+      <span class="scrub-label"><span class="dot"></span>Chapter I · Groundwork</span>
+      <div class="scrub-caption" id="scrubCaption"></div>
+      <div class="scrub-progress"><div class="scrub-progress__fill" id="scrubFill"></div></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ==================== SKILLS ==================== -->
+<section class="band" id="skills">
+  <header class="section-head">
+    <div class="section-kicker">§ 01 — What I do</div>
+    <h2 class="section-title">Skills &amp; <em>tools</em></h2>
+  </header>
+
+        <section class="skills section" id="skills" style="padding-top: 0;">
+            <div class="skills__container container grid">
+                <div>
+                    <div class="skills__content skills__open">
+                        <div class="skills__header">
+                            <i class="uil uil-brain skills__icon"></i>
+
+                            <div>
+                                <h1 class="skills__title">AI &amp; Data Science</h1>
+                                <span class="skills__subtitle">3+ Years XP</span>
+                            </div>
+
+                            <i class="uil uil-angle-down skills__arrow"></i>
+                        </div>
+
+                        <div class="skills__list grid">
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Computer Vision</h3>
+                                    <span class="skills__number">92%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__cv"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Natural Language Processing</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__nlp"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Generative AI</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__ap"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Reinforcement Learning</h3>
+                                    <span class="skills__number">88%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__rl"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Deep Reinforcement Learning</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__drl"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">RLHF</h3>
+                                    <span class="skills__number">82%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__rlhf"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Probability &amp; Statistics</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__ps"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Data Analytics &amp; Visualization</h3>
+                                    <span class="skills__number">80%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__dav"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">MLOps</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__frameworks"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Distributed DNN Training</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__nlp"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Multi Agent Models</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__nlp"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Neural Networks &amp; HPC</h3>
+                                    <span class="skills__number">88%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__nn"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="skills__content skills__close">
+                        <div class="skills__header">
+                            <i class="uil uil-brackets-curly skills__icon"></i>
+
+                            <div>
+                                <h1 class="skills__title">Programming &amp; Frameworks</h1>
+                                <span class="skills__subtitle">3+ Years XP</span>
+                            </div>
+
+                            <i class="uil uil-angle-down skills__arrow"></i>
+                        </div>
+
+                        <div class="skills__list grid">
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Python</h3>
+                                    <span class="skills__number">95%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__python"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">PyTorch</h3>
+                                    <span class="skills__number">92%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__pytorch"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">TensorFlow</h3>
+                                    <span class="skills__number">88%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__tf"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">NumPy &amp; Pandas</h3>
+                                    <span class="skills__number">93%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__numpy"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">R</h3>
+                                    <span class="skills__number">80%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__r"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">C &amp; C++</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__cpp"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">C#</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__java"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">SQL</h3>
+                                    <span class="skills__number">95%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__sql"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">MLflow / Weights &amp; Biases</h3>
+                                    <span class="skills__number">87%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__mlflow"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="skills__content skills__close">
+                        <div class="skills__header">
+                            <i class="uil uil-cloud-computing skills__icon"></i>
+
+                            <div>
+                                <h1 class="skills__title">Computing</h1>
+                                <span class="skills__subtitle">2+ Years XP</span>
+                            </div>
+
+                            <i class="uil uil-angle-down skills__arrow"></i>
+                        </div>
+
+                        <div class="skills__list grid">
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Docker</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__gcp"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Microsoft Azure</h3>
+                                    <span class="skills__number">80%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills_azura"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Amazon Web Services</h3>
+                                    <span class="skills__number">75%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__aws"><br><br></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Virtualization</h3>
+                                    <span class="skills__number">75%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__aws"><br><br></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="skills__content skills__close">
+                        <div class="skills__header">
+                            <i class="uil uil-swatchbook skills__icon"></i>
+
+                            <div>
+                                <h1 class="skills__title">Frontend</h1>
+                                <span class="skills__subtitle">2+ Years XP</span>
+                            </div>
+
+                            <i class="uil uil-angle-down skills__arrow"></i>
+                        </div>
+
+                        <div class="skills__list grid">
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">HTML</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__html"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">CSS</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__css"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">JavaScript</h3>
+                                    <span class="skills__number">75%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__js"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Angular</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__react"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">React Native</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__react"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="skills__content skills__close">
+                        <div class="skills__header">
+                            <i class="uil uil-server-network skills__icon"></i>
+
+                            <div>
+                                <h1 class="skills__title">Backend</h1>
+                                <span class="skills__subtitle">2+ Years XP</span>
+                            </div>
+
+                            <i class="uil uil-angle-down skills__arrow"></i>
+                        </div>
+
+                        <div class="skills__list grid">
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Python - Flask, Fast API</h3>
+                                    <span class="skills__number">95%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__pythons"></span>
+                                </div>
+                            </div>
+
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Node JS</h3>
+                                    <span class="skills__number">80%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__node"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="skills__content skills__close">
+                        <div class="skills__header">
+                            <i class="uil uil-analysis skills__icon"></i>
+
+                            <div>
+                                <h1 class="skills__title">Misc</h1>
+                                <span class="skills__subtitle">2+ Years XP</span>
+                            </div>
+
+                            <i class="uil uil-angle-down skills__arrow"></i>
+                        </div>
+
+                        <div class="skills__list grid">
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Git</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__git"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Linux</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__linux"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">DevOps</h3>
+                                    <span class="skills__number">75%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__js"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Software Development</h3>
+                                    <span class="skills__number">85%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__sd"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Leadership</h3>
+                                    <span class="skills__number">95%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__lead"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Communication</h3>
+                                    <span class="skills__number">90%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__com"></span>
+                                </div>
+                            </div>
+
+                            <div class="skills__data">
+                                <div class="skills__titles">
+                                    <h3 class="skills__name">Time Management</h3>
+                                    <span class="skills__number">98%</span>
+                                </div>
+                                <div class="skills__bar">
+                                    <span class="skills__percentage skills__tm"></span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+</section>
+
+<!-- ==================== EXPERIENCE ==================== -->
+<section class="band band--cream-2" id="experience">
+  <header class="section-head">
+    <div class="section-kicker">§ 02 — The journey</div>
+    <h2 class="section-title">Experience &amp; <em>education</em></h2>
+  </header>
+
+  <div class="qualification__container container">
+    <div class="qualification__grid">
+      
+      <!-- Academic Side -->
+      <div>
+        <div class="qualification__header">
+          <i class="uil uil-graduation-cap qualification__icon"></i>
+          <h3 class="qualification__area-title">Academic</h3>
+        </div>
+
+        <div class="qualification__sections">
+          <div class="qualification__content">
+            <!-- UCL -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <a href="assets/pdf/Transcript-Moritz.pdf" target="_blank">
+                  <h3 class="qualification__title">University College London</h3>
+                  <span class="qualification__subtitle">
+                    Artificial Intelligence and Imaging MSc • 2025 - 2026
+                  </span>
+                  <div class="qualification__calendar">
+                    <i class="uil uil-calendar-alt"></i> 2025-2026
+                  </div>
+                </a>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+                <span class="qualification__line"></span>
+              </div>
+            </div>
+
+            <!-- Technikum Vienna -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <a href="assets/pdf/Transcript-Moritz.pdf" target="_blank">
+                  <h3 class="qualification__title">Technikum Vienna</h3>
+                  <span class="qualification__subtitle">
+                    Computer Science • Data Science and AI
+                  </span>
+                  <div class="qualification__calendar">
+                    <i class="uil uil-calendar-alt"></i> 2022-2025
+                  </div>
+                </a>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+                <span class="qualification__line"></span>
+              </div>
+            </div>
+
+            <!-- Coursera NLP -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <a href="https://www.coursera.org/account/accomplishments/specialization/A8C9H7R4SZRN" target="_blank">
+                  <h3 class="qualification__title">Coursera</h3>
+                  <span class="qualification__subtitle">Natural Language Processing</span>
+                  <div class="qualification__calendar">
+                    <i class="uil uil-calendar-alt"></i> 2024
+                  </div>
+                </a>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+                <span class="qualification__line"></span>
+              </div>
+            </div>
+
+            <!-- Coursera Deep Learning -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <a href="https://www.coursera.org/account/accomplishments/specialization/NKKAUVVUDMZ7" target="_blank">
+                  <h3 class="qualification__title">Coursera</h3>
+                  <span class="qualification__subtitle">Deep Learning</span>
+                  <div class="qualification__calendar">
+                    <i class="uil uil-calendar-alt"></i> 2022
+                  </div>
+                </a>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+                <span class="qualification__line"></span>
+              </div>
+            </div>
+
+            <!-- HarvardX -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <a href="https://courses.edx.org/certificates/274000fbb35649899600f76bb1fde4ea" target="_blank">
+                  <h3 class="qualification__title">Harvard X</h3>
+                  <span class="qualification__subtitle">CS50's Introduction to AI with Python</span>
+                  <div class="qualification__calendar">
+                    <i class="uil uil-calendar-alt"></i> 2021
+                  </div>
+                </a>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Professional Side -->
+      <div>
+        <div class="qualification__header">
+          <i class="uil uil-briefcase-alt qualification__icon"></i>
+          <h3 class="qualification__area-title">Professional</h3>
+        </div>
+
+        <div class="qualification__sections">
+          <div class="qualification__content">
+            <!-- Eviden -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <h3 class="qualification__title">Machine Learning Engineer</h3>
+                <span class="qualification__subtitle">Eviden Austria (ATOS)</span>
+                <div class="qualification__calendar">
+                  <i class="uil uil-calendar-alt"></i> Oct 2024 - Present
+                </div>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+                <span class="qualification__line"></span>
+              </div>
+            </div>
+
+            <!-- Smart Digital -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <h3 class="qualification__title">Data Science Engineer</h3>
+                <span class="qualification__subtitle">Smart Digital</span>
+                <div class="qualification__calendar">
+                  <i class="uil uil-calendar-alt"></i> Jan 2023 - Jul 2024
+                </div>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+                <span class="qualification__line"></span>
+              </div>
+            </div>
+
+            <!-- Upwork -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <h3 class="qualification__title">Freelancer</h3>
+                <span class="qualification__subtitle">Upwork</span>
+                <div class="qualification__calendar">
+                  <i class="uil uil-calendar-alt"></i> April 2022 - Dec 2023
+                </div>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+                <span class="qualification__line"></span>
+              </div>
+            </div>
+
+            <!-- Rotes Kreuz -->
+            <div class="qualification__data">
+              <div class="qualification__text">
+                <h3 class="qualification__title">Paramedic</h3>
+                <span class="qualification__subtitle">Rotes Kreuz Österreich</span>
+                <div class="qualification__calendar">
+                  <i class="uil uil-calendar-alt"></i> Jul 2021 - Sep 2024
+                </div>
+              </div>
+              <div class="qualification__timeline">
+                <span class="qualification__rounder"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ==================== RESEARCH ==================== -->
+<section class="band" id="research">
+  <header class="section-head">
+    <div class="section-kicker">§ 03 — Research</div>
+    <h2 class="section-title">Research &amp; <em>thesis</em></h2>
+  </header>
+
+  <div class="research-grid">
+    <article class="research-card">
+      <div class="research-card__tag">MSc Thesis · In progress</div>
+      <h3 class="research-card__title">Foundational Model for Neurosurgical Video Intelligence</h3>
+      <div class="research-card__sub">University College London · 2025-2026</div>
+      <p class="research-card__desc">
+        Training a foundation model on 100+ hours of unlabelled neurosurgical video — learning instrument detection, pose, tissue segmentation, and 3D reconstruction directly from footage.
+      </p>
+      <div class="research-card__more">Read more →</div>
+    </article>
+
+    <article class="research-card">
+      <div class="research-card__tag">BSc Thesis · 2024</div>
+      <h3 class="research-card__title">Deep RL for Autonomous Cathsim Navigation</h3>
+      <div class="research-card__sub">Technikum Vienna · 2024-2025</div>
+      <p class="research-card__desc">
+        Applying deep reinforcement learning and imitation learning inside the Cathsim endovascular simulator — training agents to navigate catheters through anatomy models.
+      </p>
+      <div class="research-card__more">Read more →</div>
+    </article>
+  </div>
+</section>
+
+<!-- ==================== PORTFOLIO / PROJECTS ==================== -->
+<section class="band band--cream-2" id="portfolio">
+  <header class="section-head">
+    <div class="section-kicker">§ 04 — Selected work</div>
+    <h2 class="section-title">A few <em>projects</em></h2>
+  </header>
+
+  <div class="projects">
+    <a class="project p-wide" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #2a3a4d 0%, #0f1925 100%);"></div>
+      <div class="proj-placeholder" style="color:var(--rust-soft);">
+        <svg viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10,90 L40,70 L70,85 L100,40 L130,60 L160,30 L190,50"/>
+          <circle cx="40" cy="70" r="3" fill="currentColor"/>
+          <circle cx="100" cy="40" r="3" fill="currentColor"/>
+          <circle cx="160" cy="30" r="3" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">Deep RL · PyTorch</span>
+        <h3 class="project__title">Cathsim — endovascular navigation agent</h3>
+        <p class="project__desc">Learning to thread a catheter through anatomy with DQN &amp; imitation learning.</p>
+      </div>
+    </a>
+
+    <a class="project p-tall" href="#">
+      <div class="project__bg" style="background: linear-gradient(160deg, #3a2420 0%, #1a0e0a 100%);"></div>
+      <div class="proj-placeholder" style="color:var(--rust-soft);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="50" cy="50" r="22"/>
+          <circle cx="50" cy="50" r="36" stroke-dasharray="3 4"/>
+          <path d="M50,14 V26 M50,74 V86 M14,50 H26 M74,50 H86"/>
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">Foundation Models</span>
+        <h3 class="project__title">Surgical video representation learning</h3>
+        <p class="project__desc">Self-supervised pretraining on 100h of unlabelled neurosurgery.</p>
+      </div>
+    </a>
+
+    <a class="project p-med" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #1a2a3a 0%, #0a141e 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10,80 L30,20 L50,50 L70,10 L90,60" />
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">CV · Railways</span>
+        <h3 class="project__title">Smart Digital — Railway Object Detection</h3>
+        <p class="project__desc">Geospatial monitoring system using dual-camera and autonomous drones.</p>
+      </div>
+    </a>
+
+    <a class="project p-med" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #4a2820 0%, #8a3a24 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="20" y="30" width="30" height="50"/>
+          <rect x="60" y="15" width="30" height="65"/>
+          <line x1="10" y1="85" x2="110" y2="85"/>
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">Finance AI · Double DQN</span>
+        <h3 class="project__title">MarketVision — multi-modal trading</h3>
+        <p class="project__desc">Trading agent using CNNs to fuse visual, textual, and trend-based market signals.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #2a3a2a 0%, #1a241a 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20,20 L80,20 L80,80 L20,80 Z M20,50 L80,50 M50,20 L50,80" />
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">Code Analysis</span>
+        <h3 class="project__title">UMLify</h3>
+        <p class="project__desc">Automated UML diagram generation from source code using static analysis.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #3a3a1a 0%, #24240a 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="50" cy="50" r="30" />
+          <path d="M50,10 L50,90 M10,50 L90,50" />
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">Interactive Maps</span>
+        <h3 class="project__title">TourPlanner</h3>
+        <p class="project__desc">Map-based itinerary builder with real-time suggestions and route visualization.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #1a2a1a 0%, #0a140a 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10,50 Q50,10 90,50 Q50,90 10,50 Z" />
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">CV · Industrial</span>
+        <h3 class="project__title">Eviden — Pipe Damage Detection</h3>
+        <p class="project__desc">CNN-based monitoring system identifying regions of interest in industrial video.</p>
+      </div>
+    </a>
+
+    <a class="project p-med" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #2a2a4a 0%, #1a1a24 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20,20 L80,20 L80,80 L20,80 Z M30,40 H70 M30,60 H70" />
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">Distributed Systems</span>
+        <h3 class="project__title">PaperLess</h3>
+        <p class="project__desc">Scalable searchable document system built with independent Docker containers.</p>
+      </div>
+    </a>
+
+    <a class="project p-med" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #1a3029 0%, #0a1815 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20,80 C40,40 60,40 60,60 S100,80 100,40"/>
+          <circle cx="20" cy="80" r="3" fill="currentColor"/>
+          <circle cx="60" cy="60" r="3" fill="currentColor"/>
+          <circle cx="100" cy="40" r="3" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">Geo · CV</span>
+        <h3 class="project__title">Geo-AI — country detection</h3>
+        <p class="project__desc">ResNet + CLIP ensemble geolocating images to country-level accuracy.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #3a2b1a 0%, #1a1308 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20,50 Q50,20 80,50 Q50,80 20,50 Z"/>
+          <circle cx="50" cy="50" r="6" fill="currentColor"/>
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">CV · Edge</span>
+        <h3 class="project__title">AgeLens AI</h3>
+        <p class="project__desc">Real-time age estimation from facial images — reliability-focused deep learning.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #2a1820 0%, #120a10 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20,70 L40,30 L60,55 L80,20"/>
+          <rect x="15" y="78" width="70" height="10"/>
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">NLP · RAG</span>
+        <h3 class="project__title">RAG system — context-aware</h3>
+        <p class="project__desc">Retrieval-augmented generation using word embeddings for minimal hallucinations.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #24302a 0%, #0a140e 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20,80 Q40,20 60,50 T90,40"/>
+          <path d="M20,70 L90,70" stroke-dasharray="3 3"/>
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">CV · Multi-Agent</span>
+        <h3 class="project__title">Camel-Detect</h3>
+        <p class="project__desc">Ranking system using multiple specialized models for wildlife auctions.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10,50 H90 M50,10 V90" />
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">NLP · LSTM</span>
+        <h3 class="project__title">JazzGenius</h3>
+        <p class="project__desc">LSTM-powered music generation trained on Jazz corpora to create original melodies.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #3a1a1a 0%, #240a0a 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20,50 A30,30 0 1,0 80,50 A30,30 0 1,0 20,50" />
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">NN · Voice</span>
+        <h3 class="project__title">VoiceGuard</h3>
+        <p class="project__desc">Intelligent trigger word detection using robust background noise training.</p>
+      </div>
+    </a>
+
+    <a class="project p-third" href="#">
+      <div class="project__bg" style="background: linear-gradient(135deg, #1a1a3a 0%, #0a0a24 100%);"></div>
+      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20,50 L50,20 L80,50 L50,80 Z" />
+        </svg>
+      </div>
+      <div class="project__body">
+        <span class="project__tag">Industrial CV</span>
+        <h3 class="project__title">Cable Length Detection</h3>
+        <p class="project__desc">Mathematical image processing for calculating cable car wire spans.</p>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- ==================== CONTACT ==================== -->
+<section class="band band--ink" id="contact">
+  <header class="section-head">
+    <div class="section-kicker">§ 05 — Get in touch</div>
+    <h2 class="section-title">Let's <em>talk</em>.</h2>
+  </header>
+
+  <div class="contact">
+    <div>
+      <p class="contact__big">Have something to build, train, or scale?</p>
+      <p class="contact__lead">
+        I'm open to research collaborations, freelance engagements, and full-time roles — especially where medical imaging, foundation models, or RL are involved.
+      </p>
+    </div>
+    <div class="contact__links">
+      <a class="contact__link" href="mailto:moritz.schaller@example.com">
+        <span>
+          <span class="contact__link-label">Email</span>
+          <span class="contact__link-val">moritz.schaller@…</span>
+        </span>
+        <span class="contact__arrow">↗</span>
+      </a>
+      <a class="contact__link" href="https://github.com/schamori" target="_blank" rel="noopener">
+        <span>
+          <span class="contact__link-label">GitHub</span>
+          <span class="contact__link-val">schamori</span>
+        </span>
+        <span class="contact__arrow">↗</span>
+      </a>
+      <a class="contact__link" href="#">
+        <span>
+          <span class="contact__link-label">LinkedIn</span>
+          <span class="contact__link-val">/in/moritz-schaller</span>
+        </span>
+        <span class="contact__arrow">↗</span>
+      </a>
+      <a class="contact__link" href="#">
+        <span>
+          <span class="contact__link-label">CV</span>
+          <span class="contact__link-val">Download PDF</span>
+        </span>
+        <span class="contact__arrow">↓</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div><span class="mark-sm"></span> © 2026 Moritz Schaller — Built by hand in London.</div>
+  <div>Rotes Kreuz · 144 · forever.</div>
+</footer>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script src="video-config.js"></script>
+
+<script>
+/* ---------- Tweakable defaults ---------- */
+const TWEAK_DEFAULTS = window.VIDEO_SETTINGS || {
+  "scrubMultiplier": 1.0,
+  "scrubPinHeight": 2.0,
+  "scrubCaption": "",
+  "showScrubLabel": true,
+  "scrubSmoothing": 1.0
+};
+
+let TWEAKS = { ...TWEAK_DEFAULTS };
+
+/* ---------- Tab switching ---------- */
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const which = btn.dataset.tab;
+    document.getElementById('tab-work').style.display = which === 'work' ? '' : 'none';
+    document.getElementById('tab-edu').style.display  = which === 'edu'  ? '' : 'none';
+  });
+});
+
+/* ---------- Scroll-scrub video ---------- */
+(function setupScrub(){
+  const section   = document.querySelector('.hero-scrub');
+  const sticky    = document.querySelector('.hero-sticky');
+  const heroInner = document.getElementById('heroInner');
+  const stage     = document.getElementById('scrubStage');
+  const video     = document.getElementById('scrubVideo');
+  const sketchOverlay = document.getElementById('sketchOverlay');
+  const anchor    = document.getElementById('sketchAnchor');
+  const vignette  = document.getElementById('scrubVignette');
+  const fill      = document.getElementById('scrubFill');
+  const progressBar = document.querySelector('.scrub-progress');
+  const label     = document.querySelector('.scrub-label');
+  const captionEl = document.getElementById('scrubCaption');
+
+  if (!video || !section || !stage || !anchor) return;
+
+  // Set the pin track height: 1 vh of "hero visible" + N vh of scrub.
+  function applyPinHeight(){
+    const val = TWEAKS.scrubPinHeight;
+    const mult = (typeof val === 'number') ? Math.max(0.1, val) : 3.5;
+    // +1 so the first viewport-height of scroll is the morph, then scrub plays for mult vh
+    section.style.height = ((mult + 1) * 100) + 'vh';
+  }
+  applyPinHeight();
+
+  // Measure sketch anchor rect inside the sticky. The stage is absolutely positioned
+  // within .hero-sticky, so we use offsets relative to it.
+  let startRect = { left: 0, top: 0, width: 300, height: 300 };
+  function measureAnchor(){
+    const aRect = anchor.getBoundingClientRect();
+    const sRect = sticky.getBoundingClientRect();
+    startRect = {
+      left: aRect.left - sRect.left,
+      top:  aRect.top  - sRect.top,
+      width: Math.max(aRect.width, 280),
+      height: Math.max(aRect.height, 220)
+    };
+  }
+
+  // Lerp helper
+  const lerp = (a, b, t) => a + (b - a) * t;
+  // Smoothstep easing for the morph phase
+  const smoothstep = (t) => t * t * (3 - 2 * t);
+
+  let targetTime = 0;
+  let currentTime = 0;
+
+  function onScroll(){
+    measureAnchor();
+    const rect = section.getBoundingClientRect();
+    const scrollable = section.offsetHeight - window.innerHeight;
+    let rawProgress = (-rect.top) / scrollable;
+    rawProgress = Math.max(0, Math.min(1, rawProgress));
+
+    const totalMult = (typeof TWEAKS.scrubPinHeight === 'number') ? TWEAKS.scrubPinHeight : 3.5;
+    const morphEnd = 1 / (totalMult + 1); // fraction taken by the 1vh morph segment
+
+    const morphP = Math.min(1, rawProgress / morphEnd);
+    const scrubP = rawProgress; // Video scrubs concurrently with the scroll from the start
+    const morphEased = smoothstep(morphP);
+
+    // --- Morph the stage from anchor rect to fullscreen
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const left   = lerp(startRect.left, 0, morphEased);
+    const top    = lerp(startRect.top, 0, morphEased);
+    const width  = lerp(startRect.width, vw, morphEased);
+    const height = lerp(startRect.height, vh, morphEased);
+    stage.style.left   = left + 'px';
+    stage.style.top    = top + 'px';
+    stage.style.width  = width + 'px';
+    stage.style.height = height + 'px';
+
+    // --- Hero content fades and lifts slightly during morph
+    const heroOpacity = 1 - morphEased;
+    heroInner.style.opacity = heroOpacity;
+    heroInner.style.transform = `translateY(${-morphEased * 40}px)`;
+    heroInner.style.pointerEvents = morphEased > 0.5 ? 'none' : '';
+
+    // --- Sketch overlay fades out as video takes over (faster than hero)
+    if (sketchOverlay){
+      sketchOverlay.style.opacity = Math.max(0, 1 - morphEased * 1.8);
+    }
+
+    // --- Vignette + chrome appear once fullscreen
+    if (vignette) vignette.style.opacity = morphEased;
+    if (progressBar) progressBar.classList.toggle('visible', morphEased > 0.6);
+    if (label) label.classList.toggle('visible', morphEased > 0.6 && TWEAKS.showScrubLabel);
+
+    // --- Scrub mode: video.currentTime is driven by scroll position.
+    const curveVal = TWEAKS.scrubMultiplier;
+    const curveMult = (typeof curveVal === 'number') ? curveVal : 1;
+    // If multiplier is 1, it's a direct linear 1:1 scroll.
+    const scrubEased = (curveMult === 1) ? scrubP : Math.pow(scrubP, 1 / Math.max(0.1, curveMult));
+
+    if (video.duration && !isNaN(video.duration)){
+      targetTime = scrubEased * video.duration;
+    }
+    if (fill) fill.style.width = (scrubP * 100) + '%';
+    maybeHideStill(scrubP);
+
+    // --- Caption
+    if (captionEl){
+      if (TWEAKS.scrubCaption && morphEased > 0.7 && scrubP < 0.95){
+        captionEl.textContent = TWEAKS.scrubCaption;
+        captionEl.classList.add('visible');
+      } else {
+        captionEl.classList.remove('visible');
+      }
+    }
+  }
+
+  // Frame-paced lerp loop using rAF (NOT requestVideoFrameCallback — rVFC only fires on
+  // actual decoded frames during PLAYBACK, so it never ticks while the video is paused for
+  // scrubbing, which is exactly when we need it).
+  let lastWritten = -1;
+  let seekInFlight = false;
+  let rafId = null;
+
+  function frameStep(){
+    const smoothing = Math.max(0.02, Math.min(1, TWEAKS.scrubSmoothing || 0.12));
+    
+    // If smoothing is 1, jump instantly. No "coasting" after scroll stops.
+    if (smoothing >= 1) {
+      currentTime = targetTime;
+    } else {
+      currentTime += (targetTime - currentTime) * smoothing;
+    }
+
+    // Only seek if we have a new timestamp to show
+    const timeDiff = Math.abs(currentTime - lastWritten);
+    
+    // If instant (smoothing=1), we ignore seekInFlight to force the frame update
+    if ((!seekInFlight || smoothing >= 1)
+        && video.readyState >= 2
+        && video.duration && !isNaN(video.duration)
+        && timeDiff > 0.001){ // Much tighter tolerance for instant response
+      try {
+        seekInFlight = true;
+        video.currentTime = currentTime;
+        lastWritten = currentTime;
+      } catch(e){}
+    }
+    rafId = requestAnimationFrame(frameStep);
+  }
+
+  // Safety: clear the in-flight flag as soon as the seek lands, AND on a timer in case
+  // 'seeked' never fires (can happen on some browsers for micro-seeks).
+  video.addEventListener('seeked', () => { seekInFlight = false; });
+  setInterval(() => { seekInFlight = false; }, 50);
+
+  function init(){
+    video.pause();
+    measureAnchor();
+    onScroll();
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(frameStep);
+  }
+
+  // Force the video to paint its first frame at load, then swap out the poster image.
+  const firstFrameImg = document.getElementById('scrubFirstFrame');
+  video.addEventListener('loadeddata', () => {
+    try { video.currentTime = 0.001; } catch(e){}
+  });
+  // Hide the still image only once we begin scrubbing (progress > 0).
+  function maybeHideStill(progress){
+    if (!firstFrameImg) return;
+    if (progress > 0.02) firstFrameImg.classList.add('hidden');
+    else firstFrameImg.classList.remove('hidden');
+  }
+
+  video.addEventListener('loadedmetadata', init);
+  if (video.readyState >= 1) init();
+
+  // Also initialize after a frame so layout settles (fonts etc.)
+  requestAnimationFrame(() => { measureAnchor(); onScroll(); });
+  window.addEventListener('load', () => { measureAnchor(); onScroll(); });
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => { applyPinHeight(); measureAnchor(); onScroll(); }, { passive: true });
+
+  window.__scrub = { applyPinHeight, onScroll, measureAnchor };
+})();
+
+/* ---------- Skills Accordion ---------- */
+const skillsContent = document.getElementsByClassName('skills__content'),
+      skillsHeader = document.querySelectorAll('.skills__header');
+
+function toggleSkills(){
+    let itemClass = this.parentNode.className;
+
+    for(i = 0; i < skillsContent.length; i++){
+        skillsContent[i].className = 'skills__content skills__close';
+    }
+    if(itemClass === 'skills__content skills__close'){
+        this.parentNode.className = 'skills__content skills__open';
+    }
+}
+
+skillsHeader.forEach((el) =>{
+    el.addEventListener('click', toggleSkills);
+});
+
+/* ---------- PROJECT hover / tilt (subtle) ---------- */
+document.querySelectorAll('.project').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const r = card.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width  - 0.5;
+    const y = (e.clientY - r.top)  / r.height - 0.5;
+    card.style.transform = `translateY(-3px) perspective(800px) rotateX(${-y*2}deg) rotateY(${x*2}deg)`;
+  });
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+/* ---------- Smooth nav anchor scroll ---------- */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', (e) => {
+    const id = a.getAttribute('href');
+    if (id.length < 2) return;
+    const el = document.querySelector(id);
+    if (!el) return;
+    e.preventDefault();
+    window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 10, behavior: 'smooth' });
+  });
+});
+
+/* ---------- Tweaks panel host integration ---------- */
+window.__TWEAK_DEFAULTS = TWEAK_DEFAULTS;
+window.__applyTweaks = function(next){
+  TWEAKS = { ...TWEAKS, ...next };
+  if (window.__scrub) {
+    window.__scrub.applyPinHeight();
+    window.__scrub.onScroll();
+  }
+};
+
+// Initial application of config
+window.__applyTweaks(TWEAK_DEFAULTS);
+</script>
+
+<!-- Lenis smooth scroll -->
+<script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>
+(function(){
+  if (typeof Lenis === 'undefined') return;
+  const lenis = new Lenis({
+    duration: 1.1,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    smoothTouch: false
+  });
+  function raf(time){ lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+  window.__lenis = lenis;
+})();
+</script>
+
+</body>
+</html>

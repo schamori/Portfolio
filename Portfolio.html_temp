@@ -1,0 +1,86 @@
+  if (!video || !section || !stage || !anchor) return;
+
+  // Set the pin track height: 1 vh of "hero visible" + N vh of scrub.
+  function applyPinHeight(){
+    const val = TWEAKS.scrubPinHeight;
+    const mult = (typeof val === 'number') ? Math.max(0.1, val) : 3.5;
+    // +1 so the first viewport-height of scroll is the morph, then scrub plays for mult vh
+    section.style.height = ((mult + 1) * 100) + 'vh';
+  }
+  applyPinHeight();
+
+  // Measure sketch anchor rect inside the sticky. The stage is absolutely positioned
+  // within .hero-sticky, so we use offsets relative to it.
+  let startRect = { left: 0, top: 0, width: 300, height: 300 };
+  function measureAnchor(){
+    const aRect = anchor.getBoundingClientRect();
+    const sRect = sticky.getBoundingClientRect();
+    startRect = {
+      left: aRect.left - sRect.left,
+      top:  aRect.top  - sRect.top,
+      width: Math.max(aRect.width, 280),
+      height: Math.max(aRect.height, 220)
+    };
+  }
+
+  // Lerp helper
+  const lerp = (a, b, t) => a + (b - a) * t;
+  // Smoothstep easing for the morph phase
+  const smoothstep = (t) => t * t * (3 - 2 * t);
+
+  let targetTime = 0;
+  let currentTime = 0;
+
+  function onScroll(){
+    measureAnchor();
+    const rect = section.getBoundingClientRect();
+    const scrollable = section.offsetHeight - window.innerHeight;
+    let rawProgress = (-rect.top) / scrollable;
+    rawProgress = Math.max(0, Math.min(1, rawProgress));
+
+    const totalMult = (typeof TWEAKS.scrubPinHeight === 'number') ? TWEAKS.scrubPinHeight : 3.5;
+    const morphEnd = 1 / (totalMult + 1); // fraction taken by the 1vh morph segment
+
+    const morphP = Math.min(1, rawProgress / morphEnd);
+    const scrubP = rawProgress; // Video scrubs concurrently with the scroll from the start
+    const morphEased = smoothstep(morphP);
+
+    // --- Morph the stage from anchor rect to fullscreen
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const left   = lerp(startRect.left, 0, morphEased);
+    const top    = lerp(startRect.top, 0, morphEased);
+    const width  = lerp(startRect.width, vw, morphEased);
+    const height = lerp(startRect.height, vh, morphEased);
+    stage.style.left   = left + 'px';
+    stage.style.top    = top + 'px';
+    stage.style.width  = width + 'px';
+    stage.style.height = height + 'px';
+
+    // --- Hero content fades and lifts slightly during morph
+    const heroOpacity = 1 - morphEased;
+    heroInner.style.opacity = heroOpacity;
+    heroInner.style.transform = `translateY(${-morphEased * 40}px)`;
+    heroInner.style.pointerEvents = morphEased > 0.5 ? 'none' : '';
+
+    // --- Sketch overlay fades out as video takes over (faster than hero)
+    if (sketchOverlay){
+      sketchOverlay.style.opacity = Math.max(0, 1 - morphEased * 1.8);
+    }
+
+    // --- Vignette + chrome appear once fullscreen
+    if (vignette) vignette.style.opacity = morphEased;
+    if (progressBar) progressBar.classList.toggle('visible', morphEased > 0.6);
+    if (label) label.classList.toggle('visible', morphEased > 0.6 && TWEAKS.showScrubLabel);
+
+    // --- Scrub mode: video.currentTime is driven by scroll position.
+    const curveVal = TWEAKS.scrubMultiplier;
+    const curveMult = (typeof curveVal === 'number') ? curveVal : 1;
+    // If multiplier is 1, it's a direct linear 1:1 scroll.
+    const scrubEased = (curveMult === 1) ? scrubP : Math.pow(scrubP, 1 / Math.max(0.1, curveMult));
+
+    if (video.duration && !isNaN(video.duration)){
+      targetTime = scrubEased * video.duration;
+    }
+    if (fill) fill.style.width = (scrubP * 100) + '%';
+    maybeHideStill(scrubP);
