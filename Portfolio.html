@@ -157,12 +157,19 @@ body::before{
   position: absolute;
   inset: 0;
   padding: 140px 60px 80px;
-  display: grid;
-  grid-template-columns: 1.05fr 1fr;
-  gap: 60px;
+  display: flex;
   align-items: center;
+  justify-content: center;
   z-index: 2;
   will-change: opacity, transform;
+}
+.hero__inner{
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 60px;
+  align-items: center;
+  max-width: 1000px;
+  width: 100%;
 }
 
 .hero__left{
@@ -286,7 +293,7 @@ body::before{
   position: relative;
   justify-self: end;
   width: 100%;
-  max-width: 440px;
+  max-width: 200px;
   aspect-ratio: 4/5;
 }
 .portrait-frame{
@@ -798,6 +805,122 @@ section.band{
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--rust-deep);
+  cursor: pointer;
+  user-select: none;
+}
+.research-card__more::after{
+  content:"↓";
+  transition: transform .3s ease;
+  display: inline-block;
+}
+.research-card--open .research-card__more::after{
+  transform: rotate(180deg);
+}
+.research-card__expand{
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height .6s ease;
+}
+.research-card--open .research-card__expand{
+  max-height: 4000px;
+}
+.research-card__expand-inner{
+  padding-top: 28px;
+  border-top: 1px solid var(--hair);
+  margin-top: 24px;
+}
+.research-card__metrics{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.research-card__metric{
+  background: var(--cream-2);
+  border: 1px solid var(--hair);
+  padding: 18px 14px;
+  text-align: center;
+}
+.research-card__metric-val{
+  font-family: var(--f-display);
+  font-size: 30px;
+  font-weight: 600;
+  color: var(--rust);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.research-card__metric-label{
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.research-card__section-title{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: 18px;
+  margin: 24px 0 8px;
+  color: var(--ink);
+}
+.research-card__sub-title{
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--ink-2);
+  margin: 16px 0 6px;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+}
+.research-card__text{
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.research-card__img{
+  width: 100%;
+  margin: 14px 0 6px;
+  border: 1px solid var(--hair);
+}
+.research-card__caption{
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 16px;
+}
+.research-card__comparison{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 12px 0 18px;
+}
+.research-card__persona{
+  padding: 16px;
+  border: 1px solid var(--hair);
+  background: var(--cream-2);
+}
+.research-card__persona-label{
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--rust);
+  margin-bottom: 8px;
+}
+.research-card__persona-text{
+  font-size: 13px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  font-style: italic;
+}
+.research-card__list{
+  padding-left: 18px;
+  margin: 8px 0 16px;
+}
+.research-card__list li{
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.6;
+  margin-bottom: 6px;
 }
 
 /* ---------- PORTFOLIO / PROJECTS ---------- */
@@ -1083,6 +1206,7 @@ section.band{
 
     <!-- Hero content (fades out as we scroll) -->
     <div class="hero" id="heroInner">
+      <div class="hero__inner">
       <div class="hero__left">
         <div class="hero__eyebrow">Moritz Schaller · Research Engineer · London / Vienna</div>
 
@@ -1101,12 +1225,13 @@ section.band{
         <div class="hero__sketch" id="sketchAnchor"></div>
       </div>
 
-      <div class="hero__right" style="max-width: 260px;">
+      <div class="hero__right">
         <div class="portrait-frame">
           <img class="portrait-img" src="m/assets/img/Moritz.png" alt="Moritz" />
         </div>
         <span class="portrait-caption">— that's me, 22</span>
       </div>
+      </div><!-- /.hero__inner -->
 
       <div class="scroll-hint">
         <span>Scroll to begin</span>
@@ -1144,7 +1269,7 @@ section.band{
         <section class="skills section" id="skills" style="padding-top: 0;">
             <div class="skills__container container grid">
                 <div>
-                    <div class="skills__content skills__open">
+                    <div class="skills__content skills__close">
                         <div class="skills__header">
                             <i class="uil uil-brain skills__icon"></i>
 
@@ -1841,13 +1966,70 @@ section.band{
     </article>
 
     <article class="research-card">
-      <div class="research-card__tag">BSc Thesis · 2024</div>
-      <h3 class="research-card__title">Deep RL for Autonomous Cathsim Navigation</h3>
-      <div class="research-card__sub">Technikum Vienna · 2024-2025</div>
+      <div class="research-card__tag">BSc Thesis · 2024-2025</div>
+      <h3 class="research-card__title">Automatic LLM Personalisation with Human Feedback</h3>
+      <div class="research-card__sub">UAS Vienna · 2024-2025</div>
       <p class="research-card__desc">
-        Applying deep reinforcement learning and imitation learning inside the Cathsim endovascular simulator — training agents to navigate catheters through anatomy models.
+        Enhanced a commercial RAG system for data privacy and automatic user personalisation — training a local LLM with a custom user-embedding layer on RLHF to adapt response style to individual personas.
       </p>
-      <div class="research-card__more">Read more →</div>
+      <div class="research-card__more">Read more</div>
+      <div class="research-card__expand">
+        <div class="research-card__expand-inner">
+          <div class="research-card__metrics">
+            <div class="research-card__metric">
+              <div class="research-card__metric-val">90%</div>
+              <div class="research-card__metric-label">Improvement in aligning responses to user personas</div>
+            </div>
+            <div class="research-card__metric">
+              <div class="research-card__metric-val">1.36s</div>
+              <div class="research-card__metric-label">Reduction in query time via KV caching</div>
+            </div>
+            <div class="research-card__metric">
+              <div class="research-card__metric-val">100%</div>
+              <div class="research-card__metric-label">Data privacy achieved by hosting local LLM</div>
+            </div>
+          </div>
+
+          <img src="assets/img/map.png" alt="User embedding visualization" class="research-card__img">
+          <p class="research-card__caption">PCA plot showing the learned embeddings for the 'lawyer' (user_1) and 'social media analyst' (user_2). Their separation demonstrates the model successfully captured their distinct preferences.</p>
+
+          <p class="research-card__text">I enhanced a commercial RAG system to address data privacy risks and enable automatic user personalisation. I developed a local LLM with a custom user-embedding layer that learns individual preferences from star ratings. The final system adapted its response style to different user personas, making a lawyer persona 90% more likely to receive a detailed, formal response.</p>
+
+          <h4 class="research-card__section-title">The Problem</h4>
+          <p class="research-card__text">The existing system sent user data to third-party APIs, which was unacceptable for clients with sensitive information. The system also had no memory for user preferences between sessions, causing user frustration.</p>
+
+          <h4 class="research-card__section-title">Technical Solution</h4>
+          <div class="research-card__sub-title">System Architecture</div>
+          <img src="assets/img/diagramm.jpg" alt="System Architecture Diagram" class="research-card__img">
+          <p class="research-card__caption">Architecture diagram showing the RAG system, user feedback loop, local LLM, and custom user-embedding layer integration.</p>
+
+          <div class="research-card__sub-title">Architecture</div>
+          <p class="research-card__text">My solution uses a Representation Learning Approach. I subclassed a LlamaForCausalLLM to introduce a custom user-embedding layer. This layer concatenates a learned user-specific vector with the standard word embeddings. This method allows a single model to serve all users, which avoids the high cost of training a model for each user.</p>
+
+          <div class="research-card__sub-title">Training and Optimisation</div>
+          <p class="research-card__text">The model was trained using Reinforcement Learning from Human Feedback (RLHF). I used Group Relative Policy Optimization (GRPO) because its low memory footprint was essential for the single Tesla T4 16GB GPU, as it does not require a reference model like PPO. To make training feasible, I used LoRA, 8-bit precision, and Key-Value (KV) caching, which reduced response times by 1.36 seconds per query.</p>
+
+          <h4 class="research-card__section-title">Results</h4>
+          <div class="research-card__sub-title">Prompt: What is a projectile?</div>
+          <div class="research-card__comparison">
+            <div class="research-card__persona">
+              <div class="research-card__persona-label">Lawyer Persona</div>
+              <p class="research-card__persona-text">A projectile is a body that is thrown into the air or projected through space by the action of a propelling force.</p>
+            </div>
+            <div class="research-card__persona">
+              <div class="research-card__persona-label">Social Media Analyst</div>
+              <p class="research-card__persona-text">A projectile is a body that is shot, flung, or thrown into the air.</p>
+            </div>
+          </div>
+
+          <h4 class="research-card__section-title">Key Learnings</h4>
+          <ul class="research-card__list">
+            <li><strong>Hyperparameter Tuning:</strong> RLHF training is very sensitive. A high learning rate caused model collapse, where it only outputted the letter "e".</li>
+            <li><strong>Hardware Constraints:</strong> Optimisation techniques like GRPO, LoRA, and KV caching were not optional. They were essential to successfully train and run the model on a single 16GB GPU.</li>
+            <li><strong>Dataset Selection:</strong> The choice of dataset is important. The short answers in the SQuAD dataset were not suitable for training a model on style and verbosity. The QuAC dataset was more effective.</li>
+          </ul>
+        </div>
+      </div>
     </article>
   </div>
 </section>
@@ -1860,62 +2042,10 @@ section.band{
   </header>
 
   <div class="projects">
-    <a class="project p-wide" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #2a3a4d 0%, #0f1925 100%);"></div>
-      <div class="proj-placeholder" style="color:var(--rust-soft);">
-        <svg viewBox="0 0 200 120" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M10,90 L40,70 L70,85 L100,40 L130,60 L160,30 L190,50"/>
-          <circle cx="40" cy="70" r="3" fill="currentColor"/>
-          <circle cx="100" cy="40" r="3" fill="currentColor"/>
-          <circle cx="160" cy="30" r="3" fill="currentColor"/>
-        </svg>
-      </div>
-      <div class="project__body">
-        <span class="project__tag">Deep RL · PyTorch</span>
-        <h3 class="project__title">Cathsim — endovascular navigation agent</h3>
-        <p class="project__desc">Learning to thread a catheter through anatomy with DQN &amp; imitation learning.</p>
-      </div>
-    </a>
 
-    <a class="project p-tall" href="#">
-      <div class="project__bg" style="background: linear-gradient(160deg, #3a2420 0%, #1a0e0a 100%);"></div>
-      <div class="proj-placeholder" style="color:var(--rust-soft);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="50" cy="50" r="22"/>
-          <circle cx="50" cy="50" r="36" stroke-dasharray="3 4"/>
-          <path d="M50,14 V26 M50,74 V86 M14,50 H26 M74,50 H86"/>
-        </svg>
-      </div>
-      <div class="project__body">
-        <span class="project__tag">Foundation Models</span>
-        <h3 class="project__title">Surgical video representation learning</h3>
-        <p class="project__desc">Self-supervised pretraining on 100h of unlabelled neurosurgery.</p>
-      </div>
-    </a>
-
-    <a class="project p-med" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #1a2a3a 0%, #0a141e 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M10,80 L30,20 L50,50 L70,10 L90,60" />
-        </svg>
-      </div>
-      <div class="project__body">
-        <span class="project__tag">CV · Railways</span>
-        <h3 class="project__title">Smart Digital — Railway Object Detection</h3>
-        <p class="project__desc">Geospatial monitoring system using dual-camera and autonomous drones.</p>
-      </div>
-    </a>
-
-    <a class="project p-med" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #4a2820 0%, #8a3a24 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="20" y="30" width="30" height="50"/>
-          <rect x="60" y="15" width="30" height="65"/>
-          <line x1="10" y1="85" x2="110" y2="85"/>
-        </svg>
-      </div>
+    <!-- Row 1: MarketVision (wide) + Smart Digital (tall) -->
+    <a class="project p-wide" href="https://moritzschaller.com/dqn" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/Stocks.gif'); background-color: #4a2820;"></div>
       <div class="project__body">
         <span class="project__tag">Finance AI · Double DQN</span>
         <h3 class="project__title">MarketVision — multi-modal trading</h3>
@@ -1923,56 +2053,18 @@ section.band{
       </div>
     </a>
 
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #2a3a2a 0%, #1a241a 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20,20 L80,20 L80,80 L20,80 Z M20,50 L80,50 M50,20 L50,80" />
-        </svg>
-      </div>
+    <a class="project p-tall" href="smart-digital.html">
+      <div class="project__bg" style="background-image: url('assets/img/train.gif'); background-color: #0a141e;"></div>
       <div class="project__body">
-        <span class="project__tag">Code Analysis</span>
-        <h3 class="project__title">UMLify</h3>
-        <p class="project__desc">Automated UML diagram generation from source code using static analysis.</p>
+        <span class="project__tag">CV · Railways</span>
+        <h3 class="project__title">Smart Digital — Railway Object Detection</h3>
+        <p class="project__desc">Geospatial monitoring system using dual-camera and autonomous drones.</p>
       </div>
     </a>
 
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #3a3a1a 0%, #24240a 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="50" cy="50" r="30" />
-          <path d="M50,10 L50,90 M10,50 L90,50" />
-        </svg>
-      </div>
-      <div class="project__body">
-        <span class="project__tag">Interactive Maps</span>
-        <h3 class="project__title">TourPlanner</h3>
-        <p class="project__desc">Map-based itinerary builder with real-time suggestions and route visualization.</p>
-      </div>
-    </a>
-
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #1a2a1a 0%, #0a140a 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M10,50 Q50,10 90,50 Q50,90 10,50 Z" />
-        </svg>
-      </div>
-      <div class="project__body">
-        <span class="project__tag">CV · Industrial</span>
-        <h3 class="project__title">Eviden — Pipe Damage Detection</h3>
-        <p class="project__desc">CNN-based monitoring system identifying regions of interest in industrial video.</p>
-      </div>
-    </a>
-
-    <a class="project p-med" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #2a2a4a 0%, #1a1a24 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20,20 L80,20 L80,80 L20,80 Z M30,40 H70 M30,60 H70" />
-        </svg>
-      </div>
+    <!-- Row 2: PaperLess (tall) + Geo-AI (wide) -->
+    <a class="project p-tall" href="https://github.com/schamori/SWEN-3" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/Docker.gif'); background-color: #1a1a24;"></div>
       <div class="project__body">
         <span class="project__tag">Distributed Systems</span>
         <h3 class="project__title">PaperLess</h3>
@@ -1980,16 +2072,8 @@ section.band{
       </div>
     </a>
 
-    <a class="project p-med" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #1a3029 0%, #0a1815 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 120 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20,80 C40,40 60,40 60,60 S100,80 100,40"/>
-          <circle cx="20" cy="80" r="3" fill="currentColor"/>
-          <circle cx="60" cy="60" r="3" fill="currentColor"/>
-          <circle cx="100" cy="40" r="3" fill="currentColor"/>
-        </svg>
-      </div>
+    <a class="project p-wide" href="https://github.com/schamori/geo-ai" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/Geo.webp'); background-color: #0a1815;"></div>
       <div class="project__body">
         <span class="project__tag">Geo · CV</span>
         <h3 class="project__title">Geo-AI — country detection</h3>
@@ -1997,14 +2081,28 @@ section.band{
       </div>
     </a>
 
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #3a2b1a 0%, #1a1308 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20,50 Q50,20 80,50 Q50,80 20,50 Z"/>
-          <circle cx="50" cy="50" r="6" fill="currentColor"/>
-        </svg>
+    <!-- Row 3: UMLify (wide) + TourPlanner (tall) -->
+    <a class="project p-wide" href="https://github.com/schamori/UMLify" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/uml.gif'); background-color: #1a241a;"></div>
+      <div class="project__body">
+        <span class="project__tag">Code Analysis</span>
+        <h3 class="project__title">UMLify</h3>
+        <p class="project__desc">Automated UML diagram generation from source code using static analysis.</p>
       </div>
+    </a>
+
+    <a class="project p-tall" href="https://github.com/schamori/Tour-planner" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/map.gif'); background-color: #24240a;"></div>
+      <div class="project__body">
+        <span class="project__tag">Interactive Maps</span>
+        <h3 class="project__title">TourPlanner</h3>
+        <p class="project__desc">Map-based itinerary builder with real-time suggestions and route visualization.</p>
+      </div>
+    </a>
+
+    <!-- Row 4: AgeLens (tall) + Camel-Detect (wide) -->
+    <a class="project p-tall" href="https://github.com/schamori/AgeLens" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/age.gif'); background-color: #1a1308;"></div>
       <div class="project__body">
         <span class="project__tag">CV · Edge</span>
         <h3 class="project__title">AgeLens AI</h3>
@@ -2012,29 +2110,8 @@ section.band{
       </div>
     </a>
 
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #2a1820 0%, #120a10 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20,70 L40,30 L60,55 L80,20"/>
-          <rect x="15" y="78" width="70" height="10"/>
-        </svg>
-      </div>
-      <div class="project__body">
-        <span class="project__tag">NLP · RAG</span>
-        <h3 class="project__title">RAG system — context-aware</h3>
-        <p class="project__desc">Retrieval-augmented generation using word embeddings for minimal hallucinations.</p>
-      </div>
-    </a>
-
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #24302a 0%, #0a140e 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20,80 Q40,20 60,50 T90,40"/>
-          <path d="M20,70 L90,70" stroke-dasharray="3 3"/>
-        </svg>
-      </div>
+    <a class="project p-wide" href="https://github.com/schamori/Camel-Detect" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/camel.gif'); background-color: #0a140e;"></div>
       <div class="project__body">
         <span class="project__tag">CV · Multi-Agent</span>
         <h3 class="project__title">Camel-Detect</h3>
@@ -2042,13 +2119,28 @@ section.band{
       </div>
     </a>
 
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M10,50 H90 M50,10 V90" />
-        </svg>
+    <!-- Row 5: Eviden (wide) + RAG (tall) -->
+    <a class="project p-wide" href="#">
+      <div class="project__bg" style="background-image: url('assets/img/factory.gif'); background-color: #0a140a;"></div>
+      <div class="project__body">
+        <span class="project__tag">CV · Industrial</span>
+        <h3 class="project__title">Eviden — Pipe Damage Detection</h3>
+        <p class="project__desc">CNN-based monitoring system identifying regions of interest in industrial video.</p>
       </div>
+    </a>
+
+    <a class="project p-tall" href="#">
+      <div class="project__bg" style="background-image: url('assets/img/rag-system.webp'); background-color: #120a10;"></div>
+      <div class="project__body">
+        <span class="project__tag">NLP · RAG</span>
+        <h3 class="project__title">RAG system — context-aware</h3>
+        <p class="project__desc">Retrieval-augmented generation using word embeddings for minimal hallucinations.</p>
+      </div>
+    </a>
+
+    <!-- Row 6: JazzGenius (tall) + VoiceGuard (wide) -->
+    <a class="project p-tall" href="https://github.com/schamori/music-gen" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/music.gif'); background-color: #1a1a1a;"></div>
       <div class="project__body">
         <span class="project__tag">NLP · LSTM</span>
         <h3 class="project__title">JazzGenius</h3>
@@ -2056,13 +2148,8 @@ section.band{
       </div>
     </a>
 
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #3a1a1a 0%, #240a0a 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20,50 A30,30 0 1,0 80,50 A30,30 0 1,0 20,50" />
-        </svg>
-      </div>
+    <a class="project p-wide" href="https://github.com/schamori/trigger-word" target="_blank">
+      <div class="project__bg" style="background-image: url('assets/img/art.gif'); background-color: #240a0a;"></div>
       <div class="project__body">
         <span class="project__tag">NN · Voice</span>
         <h3 class="project__title">VoiceGuard</h3>
@@ -2070,19 +2157,25 @@ section.band{
       </div>
     </a>
 
-    <a class="project p-third" href="#">
-      <div class="project__bg" style="background: linear-gradient(135deg, #1a1a3a 0%, #0a0a24 100%);"></div>
-      <div class="proj-placeholder" style="color:rgba(245,239,228,0.5);">
-        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20,50 L50,20 L80,50 L50,80 Z" />
-        </svg>
-      </div>
+    <!-- Row 7: Cable Length (wide) + Cathsim (tall) — Cathsim at the bottom -->
+    <a class="project p-wide" href="#">
+      <div class="project__bg" style="background-image: url('assets/img/cable.gif'); background-color: #0a0a24;"></div>
       <div class="project__body">
         <span class="project__tag">Industrial CV</span>
         <h3 class="project__title">Cable Length Detection</h3>
         <p class="project__desc">Mathematical image processing for calculating cable car wire spans.</p>
       </div>
     </a>
+
+    <a class="project p-tall" href="#">
+      <div class="project__bg" style="background-image: url('assets/img/dqn.webp'); background-color: #0f1925;"></div>
+      <div class="project__body">
+        <span class="project__tag">Deep RL · PyTorch</span>
+        <h3 class="project__title">Cathsim — endovascular navigation agent</h3>
+        <p class="project__desc">Learning to thread a catheter through anatomy with DQN &amp; imitation learning.</p>
+      </div>
+    </a>
+
   </div>
 </section>
 
@@ -2115,14 +2208,14 @@ section.band{
         </span>
         <span class="contact__arrow">↗</span>
       </a>
-      <a class="contact__link" href="#">
+      <a class="contact__link" href="https://www.linkedin.com/in/moritz--schaller/" target="_blank" rel="noopener">
         <span>
           <span class="contact__link-label">LinkedIn</span>
-          <span class="contact__link-val">/in/moritz-schaller</span>
+          <span class="contact__link-val">/in/moritz--schaller</span>
         </span>
         <span class="contact__arrow">↗</span>
       </a>
-      <a class="contact__link" href="#">
+      <a class="contact__link" href="assets/pdf/CV-Moritz-Schaller.pdf" target="_blank" download>
         <span>
           <span class="contact__link-label">CV</span>
           <span class="contact__link-val">Download PDF</span>
@@ -2366,6 +2459,16 @@ function toggleSkills(){
 
 skillsHeader.forEach((el) =>{
     el.addEventListener('click', toggleSkills);
+});
+
+/* ---------- Research card expand ---------- */
+document.querySelectorAll('.research-card__more').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const card = btn.closest('.research-card');
+    card.classList.toggle('research-card--open');
+    btn.textContent = card.classList.contains('research-card--open') ? 'Read less' : 'Read more';
+  });
 });
 
 /* ---------- PROJECT hover / tilt (subtle) ---------- */

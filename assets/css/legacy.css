@@ -1,0 +1,290 @@
+/* Scoped Old Portfolio Styles */
+#legacy-zone {
+  --first-color: #c85a3d; /* Rust */
+  --first-color-second: #c85a3d;
+  --first-color-alt: #a84528;
+  --first-color-lighter: #e39478;
+  --title-color: #1e1a17;
+  --text-color: #3a3230;
+  --text-color-light: #6b5f58;
+  --input-color: #efe6d4;
+  --body-color: #f5efe4;
+  --container-color: #FFF;
+  
+  --body-font: 'Inter Tight', sans-serif;
+  --title-font: 'Fraunces', serif;
+}
+
+#legacy-zone .section {
+  padding: 4rem 0 4rem;
+}
+
+#legacy-zone .section__title {
+  font-family: var(--title-font);
+  font-size: 2.25rem;
+  color: var(--title-color);
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+#legacy-zone .section__subtitle {
+  display: block;
+  font-size: 0.875rem;
+  margin-bottom: 3rem;
+  text-align: center;
+  color: var(--text-color-light);
+}
+
+#legacy-zone .container {
+  max-width: 768px;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
+}
+
+@media screen and (min-width: 768px) {
+  #legacy-zone .container {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+#legacy-zone .grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+/* Skills */
+#legacy-zone .skills__container {
+  row-gap: 0;
+}
+#legacy-zone .skills__header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2.5rem;
+  cursor: pointer;
+}
+#legacy-zone .skills__icon,
+#legacy-zone .skills__arrow {
+  font-size: 2rem;
+  color: var(--first-color);
+}
+#legacy-zone .skills__icon {
+  margin-right: 0.75rem;
+}
+#legacy-zone .skills__title {
+  font-size: 1.25rem;
+  font-family: var(--title-font);
+}
+#legacy-zone .skills__subtitle {
+  font-size: 0.75rem;
+  color: var(--text-color-light);
+}
+#legacy-zone .skills__arrow {
+  margin-left: auto;
+  transition: .4s;
+}
+#legacy-zone .skills__list {
+  row-gap: 1.5rem;
+  padding-left: 2.7rem;
+}
+#legacy-zone .skills__titles {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+#legacy-zone .skills__name {
+  font-size: 1rem;
+  font-weight: 500;
+}
+#legacy-zone .skills__bar,
+#legacy-zone .skills__percentage {
+  height: 5px;
+  border-radius: .25rem;
+}
+#legacy-zone .skills__bar {
+  background-color: var(--first-color-lighter);
+}
+#legacy-zone .skills__percentage {
+  display: block;
+  background-color: var(--first-color);
+}
+#legacy-zone .skills__open .skills__list {
+  height: max-content;
+  margin-bottom: 2.5rem;
+}
+#legacy-zone .skills__open .skills__arrow {
+  transform: rotate(-180deg);
+}
+#legacy-zone .skills__close .skills__list {
+  height: 0;
+  overflow: hidden;
+}
+
+/* Qualification */
+#legacy-zone .qualification__tabs {
+  display: flex;
+  justify-content: space-evenly;
+  margin-bottom: 2rem;
+}
+#legacy-zone .qualification__button {
+  font-size: 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+#legacy-zone .qualification__button:hover {
+  color: var(--first-color);
+}
+#legacy-zone .qualification__active {
+  color: var(--first-color);
+}
+#legacy-zone .qualification__icon {
+  font-size: 1.8rem;
+  margin-right: 0.25rem;
+}
+#legacy-zone .qualification__data {
+  display: grid;
+  grid-template-columns: 1fr max-content 1fr;
+  column-gap: 1.5rem;
+}
+#legacy-zone .qualification__title {
+  font-size: 1rem;
+  font-weight: 500;
+  font-family: var(--title-font);
+}
+#legacy-zone .qualification__subtitle {
+  display: inline-block;
+  font-size: 0.813rem;
+  margin-bottom: 1rem;
+}
+#legacy-zone .qualification__calendar {
+  font-size: 0.75rem;
+  color: var(--text-color-light);
+}
+#legacy-zone .qualification__rounder {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  background-color: var(--first-color);
+  border-radius: 50%;
+}
+#legacy-zone .qualification__line {
+  display: block;
+  width: 1px;
+  height: 100%;
+  background-color: var(--first-color);
+  transform: translate(6px, -7px);
+}
+#legacy-zone [data-content] {
+  display: none;
+}
+#legacy-zone .qualification__active[data-content] {
+  display: block;
+}
+
+/* Swiper Portfolio */
+#legacy-zone .portfolio__container {
+  overflow: initial;
+}
+#legacy-zone .portfolio__content {
+  padding: 0 1.5rem;
+}
+#legacy-zone .portfolio__img {
+  width: 265px;
+  border-radius: .5rem;
+  justify-self: center;
+}
+#legacy-zone .portfolio__title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-family: var(--title-font);
+}
+#legacy-zone .portfolio__description {
+  margin-bottom: 0.75rem;
+}
+#legacy-zone .button {
+  display: inline-block;
+  background-color: var(--first-color);
+  color: #FFF;
+  padding: 1rem;
+  border-radius: .5rem;
+  font-weight: 500;
+}
+#legacy-zone .button__icon {
+  font-size: 1.25rem;
+  margin-left: 0.5rem;
+  transition: .3s;
+}
+#legacy-zone .swiper-portfolio-icon {
+  font-size: 2rem;
+  color: var(--first-color);
+}
+#legacy-zone .swiper-button-prev,
+#legacy-zone .swiper-button-next {
+  outline: none;
+}
+#legacy-zone .swiper-button-prev::after,
+#legacy-zone .swiper-button-next::after {
+  content: '';
+}
+
+/* Footer */
+#legacy-zone .footer {
+  padding-top: 2rem;
+}
+#legacy-zone .footer__bg {
+  background-color: var(--first-color);
+  padding: 2rem 0 3rem;
+  color: #FFF;
+}
+#legacy-zone .footer__container {
+  row-gap: 3.5rem;
+}
+#legacy-zone .footer__title {
+  font-size: 2.25rem;
+  margin-bottom: 0.25rem;
+  font-family: var(--title-font);
+}
+#legacy-zone .footer__subtitle {
+  font-size: 0.813rem;
+}
+#legacy-zone .footer__links {
+  display: flex;
+  flex-direction: column;
+  row-gap: 1.5rem;
+}
+#legacy-zone .footer__link:hover {
+  color: var(--first-color-lighter);
+}
+#legacy-zone .footer__copy {
+  font-size: 0.75rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 3rem;
+}
+#legacy-zone .footer__title,
+#legacy-zone .footer__subtitle,
+#legacy-zone .footer__link {
+  color: #FFF;
+}
+
+@media screen and (min-width: 568px) {
+  #legacy-zone .skills__container,
+  #legacy-zone .portfolio__content,
+  #legacy-zone .footer__container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media screen and (min-width: 768px) {
+  #legacy-zone .portfolio__img {
+    width: 320px;
+  }
+  #legacy-zone .portfolio__content {
+    align-items: center;
+  }
+  #legacy-zone .footer__container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Smart Digital — Railway Object Detection · Moritz</title>
+<link rel="icon" href="m/assets/img/favicon.png" />
+<link rel="stylesheet" href="https://unicons.iconscout.com/release/v3.0.6/css/line.css">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,400&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --cream: #f5efe4;
+  --cream-2: #efe6d4;
+  --cream-3: #e6dcc5;
+  --ink: #1e1a17;
+  --ink-2: #3a3230;
+  --ink-3: #6b5f58;
+  --rust: #c85a3d;
+  --rust-deep: #a84528;
+  --rust-soft: #e39478;
+  --accent: #c85a3d;
+  --line: #241f1b;
+  --muted: rgba(30,26,23,0.55);
+  --hair: rgba(30,26,23,0.16);
+
+  --f-display: "Fraunces", Georgia, serif;
+  --f-body:    "Inter Tight", system-ui, sans-serif;
+  --f-hand:    "Caveat", "Fraunces", cursive;
+}
+
+*{ box-sizing: border-box; }
+html, body{ margin: 0; padding: 0; }
+body{
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+a{ color: inherit; }
+img{ max-width: 100%; display: block; }
+
+body::before{
+  content:"";
+  position: fixed; inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(120,90,60,0.06) 1px, transparent 1px),
+    radial-gradient(rgba(200,90,61,0.04) 1px, transparent 1px);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 1px 1px;
+  mix-blend-mode: multiply;
+  z-index: 1;
+}
+
+/* NAV */
+.nav{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 40px;
+  background: rgba(245,239,228,0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--hair);
+}
+.nav__logo{
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 22px;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+}
+.nav__logo .mark{
+  width: 22px; height: 22px;
+  background: var(--rust);
+  position: relative;
+  display: inline-block;
+  border: 1.5px solid var(--line);
+  transform: rotate(-2deg);
+}
+.nav__logo .mark::before, .nav__logo .mark::after{
+  content:""; position: absolute; background: var(--cream);
+}
+.nav__logo .mark::before{ left: 45%; top: 14%; width: 10%; height: 72%; }
+.nav__logo .mark::after{ top: 45%; left: 14%; height: 10%; width: 72%; }
+
+.nav__back{
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  color: var(--ink-2);
+  padding: 8px 16px;
+  border: 1px solid var(--hair);
+  transition: background .2s, color .2s;
+}
+.nav__back:hover{ background: var(--ink); color: var(--cream); }
+.nav__back i{ font-size: 16px; }
+
+/* HERO */
+.sd-hero{
+  padding: 160px 60px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.sd-hero__kicker{
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 24px;
+}
+.sd-hero__kicker::before{ content:""; width: 36px; height: 1px; background: var(--ink-3); }
+.sd-hero__title{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(40px, 6vw, 80px);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin: 0 0 20px;
+}
+.sd-hero__title em{ font-style: italic; color: var(--rust-deep); }
+.sd-hero__lead{
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: clamp(17px, 1.5vw, 20px);
+  color: var(--ink-2);
+  max-width: 680px;
+  margin: 0 0 40px;
+  line-height: 1.5;
+}
+.sd-hero__tags{
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.sd-hero__tag{
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rust);
+  border: 1px solid rgba(200,90,61,0.35);
+  padding: 5px 12px;
+}
+
+/* OVERVIEW IMAGE */
+.sd-overview{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 60px 80px;
+}
+.sd-overview__img{
+  width: 100%;
+  border: 1px solid var(--hair);
+  display: block;
+}
+
+/* SECTIONS */
+.sd-section{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 60px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  border-top: 1px solid var(--hair);
+}
+.sd-section--reverse{ direction: rtl; }
+.sd-section--reverse > *{ direction: ltr; }
+
+.sd-section__num{
+  font-family: var(--f-hand);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: var(--rust);
+  margin-bottom: 14px;
+}
+.sd-section__title{
+  font-family: var(--f-display);
+  font-weight: 500;
+  font-size: clamp(24px, 3vw, 36px);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 16px;
+}
+.sd-section__title em{ font-style: italic; color: var(--rust-deep); }
+.sd-section__desc{
+  font-size: 15px;
+  color: var(--ink-2);
+  line-height: 1.65;
+  margin: 0 0 20px;
+}
+.sd-section__list{
+  padding-left: 18px;
+  margin: 0;
+}
+.sd-section__list li{
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.65;
+  margin-bottom: 7px;
+  position: relative;
+}
+.sd-section__list li::marker{ color: var(--rust); }
+.sd-section__img{
+  width: 100%;
+  border: 1px solid var(--hair);
+}
+
+/* FOOTER */
+.sd-footer{
+  background: var(--ink);
+  color: var(--cream);
+  padding: 48px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 80px;
+}
+.sd-footer__note{
+  font-family: var(--f-display);
+  font-style: italic;
+  font-size: 20px;
+  color: rgba(245,239,228,0.7);
+}
+.sd-footer__back{
+  display: flex; align-items: center; gap: 8px;
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--cream);
+  padding: 12px 24px;
+  border: 1px solid rgba(245,239,228,0.25);
+  transition: background .2s;
+}
+.sd-footer__back:hover{ background: var(--rust-deep); border-color: var(--rust-deep); }
+
+@media (max-width: 820px){
+  .sd-hero, .sd-overview, .sd-section{ padding-left: 24px; padding-right: 24px; }
+  .sd-section{ grid-template-columns: 1fr; gap: 32px; }
+  .sd-section--reverse{ direction: ltr; }
+  .nav{ padding: 16px 24px; }
+  .sd-footer{ flex-direction: column; gap: 24px; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="Portfolio.html" class="nav__logo">
+    <span class="mark"></span>Moritz
+  </a>
+  <a href="Portfolio.html#portfolio" class="nav__back">
+    <i class="uil uil-arrow-left"></i> Back to work
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="sd-hero">
+  <div class="sd-hero__kicker">§ Project Case Study</div>
+  <h1 class="sd-hero__title">Smart Digital —<br><em>Railway Object Detection</em></h1>
+  <p class="sd-hero__lead">
+    Revolutionising critical infrastructure management through geospatial object detection, autonomous drones, and AI-powered condition monitoring across railway, energy, and roadway sectors.
+  </p>
+  <div class="sd-hero__tags">
+    <span class="sd-hero__tag">Computer Vision</span>
+    <span class="sd-hero__tag">Instance Segmentation</span>
+    <span class="sd-hero__tag">Geospatial AI</span>
+    <span class="sd-hero__tag">Autonomous Drones</span>
+    <span class="sd-hero__tag">IoT Monitoring</span>
+  </div>
+</div>
+
+<!-- OVERVIEW IMAGE -->
+<div class="sd-overview">
+  <img src="assets/img/smart-digital-overview.jpg" alt="Smart Digital Infrastructure Monitoring" class="sd-overview__img">
+</div>
+
+<!-- SECTION 1: Terrain -->
+<section class="sd-section">
+  <div>
+    <div class="sd-section__num">01 — Planning Phase</div>
+    <h2 class="sd-section__title">Object &amp; <em>Terrain</em> Visualisation</h2>
+    <p class="sd-section__desc">
+      In the planning phase of new infrastructure paths, SmartDigital conducts in-depth terrain assessments to ensure precision before construction begins.
+    </p>
+    <ul class="sd-section__list">
+      <li>Precise surveying of planned areas and determination of required distances</li>
+      <li>Automated checks for potential threats like vegetation or at-risk trees</li>
+      <li>Effective management of construction sites</li>
+      <li>Digital twin representation of construction progression</li>
+      <li>Precise measurement of construction debris and materials for accurate billing</li>
+    </ul>
+  </div>
+  <img src="assets/img/smart-digital-terrain.jpg" alt="Terrain Visualisation" class="sd-section__img">
+</section>
+
+<!-- SECTION 2: Inventory -->
+<section class="sd-section sd-section--reverse">
+  <div>
+    <div class="sd-section__num">02 — Infrastructure Cataloging</div>
+    <h2 class="sd-section__title">Object Recognition &amp; <em>Inventory</em></h2>
+    <p class="sd-section__desc">
+      SmartDigital enables consistent digital cataloging of crucial infrastructure components with AI-driven processing and geospatial coordinates.
+    </p>
+    <ul class="sd-section__list">
+      <li>Recognition of objects along planned or existing pathways (poles, insulators, ties, switches, etc.)</li>
+      <li>Identification and mapping of safety structures (avalanche barriers, rockfall nets, etc.)</li>
+      <li>Automatic detection and listing of components with geographical coordinates</li>
+      <li>Utilisation of aerial data gathering methods (video, infrared, laser)</li>
+      <li>AI-driven processing and analysis for digital archiving and categorisation</li>
+    </ul>
+  </div>
+  <img src="assets/img/smart-digital-inventory.jpg" alt="Object Recognition and Inventory" class="sd-section__img">
+</section>
+
+<!-- SECTION 3: Monitoring -->
+<section class="sd-section">
+  <div>
+    <div class="sd-section__num">03 — Maintenance</div>
+    <h2 class="sd-section__title">Condition <em>Monitoring</em></h2>
+    <p class="sd-section__desc">
+      Advanced AI-powered monitoring system for proactive infrastructure maintenance, leveraging IoT and unmanned systems to stay ahead of failures.
+    </p>
+    <ul class="sd-section__list">
+      <li>AI-powered image analysis for object identification and comparison</li>
+      <li>IoT system for prompt alerting and forwarding of concern areas</li>
+      <li>AI-backed vegetation monitoring, especially for tree-fall perimeters</li>
+      <li>Unmanned aerial systems (UAS) for forward-thinking maintenance</li>
+      <li>Swift identification of potential threats (building fractures, landslides, etc.)</li>
+    </ul>
+  </div>
+  <img src="assets/img/smart-digital-monitoring.jpg" alt="Condition Monitoring" class="sd-section__img">
+</section>
+
+<!-- SECTION 4: Emergency -->
+<section class="sd-section sd-section--reverse">
+  <div>
+    <div class="sd-section__num">04 — Emergency Response</div>
+    <h2 class="sd-section__title">Incident &amp; <em>Emergency</em> Exploration</h2>
+    <p class="sd-section__desc">
+      Drone technology enables rapid situation assessment and real-time decision-making during emergencies — even during nighttime operations.
+    </p>
+    <ul class="sd-section__list">
+      <li>Swift situation assessment through UAS visual checks and data gathering</li>
+      <li>Enhanced speed and efficacy of decision-making during emergencies</li>
+      <li>Rapid damage assessments after storms or natural disasters</li>
+      <li>Real-time flight monitoring with "live views" integration</li>
+      <li>Capability for instant response, even during nighttime operations</li>
+    </ul>
+  </div>
+  <img src="assets/img/smart-digital-emergency.jpg" alt="Emergency Exploration" class="sd-section__img">
+</section>
+
+<!-- FOOTER -->
+<footer class="sd-footer">
+  <p class="sd-footer__note">Transforming infrastructure with AI.</p>
+  <a href="Portfolio.html#portfolio" class="sd-footer__back">
+    <i class="uil uil-arrow-left"></i> Back to all projects
+  </a>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.body.style.opacity = '0';
+  document.body.style.transition = 'opacity 0.4s ease';
+  setTimeout(() => { document.body.style.opacity = '1'; }, 0);
+});
+</script>
+</body>
+</html>
